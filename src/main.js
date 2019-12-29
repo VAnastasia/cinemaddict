@@ -1,13 +1,14 @@
-const FILM_COUNT = 5;
+import {createFilmTemplate} from "./components/film";
+// import {createFilmPopupTemplate} from "./components/film-details";
+import {createMenuTemplate} from "./components/menu";
+import {createFilterTemplate} from "./components/filter";
+import {createShowMoreTemplate} from "./components/show-more";
+import {createProfileTemplate} from "./components/profile";
+import {createFilmList} from "./components/film-list";
+import {createFilmExtraList} from "./components/film-extra-list";
 
-import { createFilmTemplate } from "./components/film";
-import { createFilmPopupTemplate } from "./components/film-details";
-import { createMenuTemplate } from "./components/menu";
-import { createFilterTemplate } from "./components/filter";
-import { createShowMoreTemplate } from "./components/show-more";
-import { createProfileTemplate } from "./components/profile";
-import { createFilmList } from "./components/film-list";
-import { createFilmExtraList } from "./components/film-extra-list";
+import {films, filmsAll, filmsRated, filmsCommented} from "./data";
+
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -23,8 +24,8 @@ render(siteMainElement, createFilmList(), `beforeend`);
 
 const filmListContainer = document.querySelector(`.films-list__container`);
 
-new Array(FILM_COUNT).fill(``).forEach(() => {
-  render(filmListContainer, createFilmTemplate(), `beforeend`);
+filmsAll.slice(0, 5).forEach((film) => {
+  render(filmListContainer, createFilmTemplate(film), `beforeend`);
 });
 
 const filmListElement = document.querySelector(`.films-list`);
@@ -36,13 +37,18 @@ render(filmsElement, createFilmExtraList(`Top rated`), `beforeend`);
 render(filmsElement, createFilmExtraList(`Most commented`), `beforeend`);
 
 const filmsExtraElements = document.querySelectorAll(
-  `.films-list--extra .films-list__container`
+    `.films-list--extra .films-list__container`
 );
 
-filmsExtraElements.forEach(container => {
-  new Array(2).fill(``).forEach(() => {
-    render(container, createFilmTemplate(), `beforeend`);
-  });
+filmsRated.forEach((film) => {
+  render(filmsExtraElements[0], createFilmTemplate(film), `beforeend`);
 });
 
-render(siteMainElement, createFilmPopupTemplate(), `beforeend`);
+filmsCommented.forEach((film) => {
+  render(filmsExtraElements[1], createFilmTemplate(film), `beforeend`);
+});
+
+// render(siteMainElement, createFilmPopupTemplate(filmsAll[0]), `beforeend`);
+
+const footerStatistic = document.querySelector(`.footer__statistics p`);
+footerStatistic.textContent = `${films.length} movies inside`;
