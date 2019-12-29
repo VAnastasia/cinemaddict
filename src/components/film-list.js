@@ -8,4 +8,4 @@ const createFilmList = () => {
     </section>`;
 };
 
-export { createFilmList };
+export {createFilmList};

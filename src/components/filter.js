@@ -6,4 +6,4 @@ const createFilterTemplate = () => {
   </ul>`;
 };
 
-export { createFilterTemplate };
+export {createFilterTemplate};

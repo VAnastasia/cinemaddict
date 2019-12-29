@@ -1,4 +1,4 @@
-const createFilmExtraList = text => {
+const createFilmExtraList = (text) => {
   return `<section class="films-list--extra">
       <h2 class="films-list__title">${text}</h2>
 
@@ -6,4 +6,4 @@ const createFilmExtraList = text => {
     </section>`;
 };
 
-export { createFilmExtraList };
+export {createFilmExtraList};
