@@ -1,6 +1,6 @@
 import {formatDate, formatRuntime} from "./utils";
 
-const FILMS_AMOUNT = 20;
+const FILMS_AMOUNT = 25;
 
 const TITLES_FILMS = [
   `Snow Cake`,
