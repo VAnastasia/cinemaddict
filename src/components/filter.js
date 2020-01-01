@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 const createFilterTemplate = () => {
   return `<ul class="sort">
     <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
@@ -6,4 +8,24 @@ const createFilterTemplate = () => {
   </ul>`;
 };
 
-export {createFilterTemplate};
+export default class FilterComponent {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilterTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,4 +1,4 @@
-import {truncateString} from "../utils";
+import {truncateString, createElement} from "../utils";
 
 const createFilmTemplate = ({
   title,
@@ -8,7 +8,10 @@ const createFilmTemplate = ({
   year,
   poster,
   runtime,
-  genres
+  genres,
+  // watchlist,
+  // watched,
+  // favorite
 }) => {
   return `<article class="film-card">
           <h3 class="film-card__title">${title}</h3>
@@ -30,4 +33,25 @@ const createFilmTemplate = ({
         </article>`;
 };
 
-export {createFilmTemplate};
+export default class FilmComponent {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
