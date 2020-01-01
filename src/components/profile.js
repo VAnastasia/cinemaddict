@@ -1,4 +1,5 @@
 import {films} from "../data";
+import {createElement} from "../utils";
 
 const Rating = {
   NOVICE: `Novice`,
@@ -31,4 +32,24 @@ const createProfileTemplate = () => {
   </section>`;
 };
 
-export {createProfileTemplate};
+export default class ProfileComponent {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createProfileTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
