@@ -1,5 +1,5 @@
 import {groupedFilms} from "../data";
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const createMenuTemplate = () => {
   return `<nav class="main-navigation">
@@ -11,24 +11,8 @@ const createMenuTemplate = () => {
   </nav>`;
 };
 
-export default class MenuComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export default class MenuComponent extends AbstractComponent {
   getTemplate() {
     return createMenuTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
