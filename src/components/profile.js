@@ -1,5 +1,5 @@
 import {films} from "../data";
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const Rating = {
   NOVICE: `Novice`,
@@ -32,24 +32,8 @@ const createProfileTemplate = () => {
   </section>`;
 };
 
-export default class ProfileComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export default class ProfileComponent extends AbstractComponent {
   getTemplate() {
     return createProfileTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
