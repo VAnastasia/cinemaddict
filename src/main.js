@@ -10,6 +10,7 @@ import ProfileComponent from "./components/profile";
 import FilmListComponent from "./components/film-list";
 import FilmExtraListComponent from "./components/film-extra-list";
 import NoFilmsComponent from "./components/no-films";
+import FooterStatisticComponent from "./components/footer-statistic";
 
 import {films, filmsAll, filmsRated, filmsCommented} from "./data";
 import {render, Position} from "./utils";
@@ -55,6 +56,7 @@ const renderFilm = (film, container) => {
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = document.querySelector(`.header`);
+const siteFooterElement = document.querySelector(`footer`);
 
 render(siteHeaderElement, new ProfileComponent().getElement(), Position.BEFOREEND);
 render(siteMainElement, new MenuComponent().getElement(), Position.BEFOREEND);
@@ -93,8 +95,7 @@ if (films.length === 0) {
   });
 }
 
-const footerStatistic = document.querySelector(`.footer__statistics p`);
-footerStatistic.textContent = `${films.length} movies inside`;
+render(siteFooterElement, new FooterStatisticComponent(films.length).getElement(), Position.BEFOREEND);
 
 let showingTasksCount = SHOWING_FILMS_COUNT_ON_START;
 showMoreComponent.setClickHandler(() => {
