@@ -84,6 +84,9 @@ const getRandomItemArray = (array) =>
 const getRandonNumber = (min, max) =>
   Math.floor(Math.random() * (max - min)) + min;
 
+const getRandomBoolean = (chance = 0.5) =>
+  Math.random() > chance;
+
 const getFilm = () => ({
   title: getRandomItemArray(TITLES_FILMS),
   description: getDescription(DESCRIPTIONS),
@@ -98,9 +101,9 @@ const getFilm = () => ({
   age: getRandomItemArray(AGE_CATEGORIES),
   runtime: formatRuntime(getRandonNumber(20, 180)),
   country: getRandomItemArray(COUNTRIES),
-  watchlist: Math.round(Math.random()),
-  watched: Math.round(Math.random()),
-  favorite: Math.round(Math.random())
+  watchlist: getRandomBoolean(),
+  watched: getRandomBoolean(),
+  favorite: getRandomBoolean(),
 });
 
 const getFilmList = (count) => new Array(count).fill().map(getFilm);

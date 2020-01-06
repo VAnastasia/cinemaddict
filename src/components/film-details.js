@@ -209,4 +209,19 @@ export default class FilmPopupComponent extends AbstractComponent {
      .addEventListener(`click`, handler);
   }
 
+  setWatchlistClickHandler(handler) {
+    this.getElement().querySelector(`input[name="watchlist"]`)
+    .addEventListener(`change`, handler);
+  }
+
+  setWatchedClickHandler(handler) {
+    this.getElement().querySelector(`input[name="watched"]`)
+    .addEventListener(`change`, handler);
+  }
+
+  setFavoriteClickHandler(handler) {
+    this.getElement().querySelector(`input[name="favorite"]`)
+    .addEventListener(`change`, handler);
+  }
+
 }

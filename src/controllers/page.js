@@ -10,9 +10,9 @@ import {render, Position} from "../utils";
 import {films, filmsRated, filmsCommented} from "../data";
 import MovieController from "./movie";
 
-const renderFilms = (movies, listFilms) => {
+const renderFilms = (movies, listFilms, onDataChange) => {
   return movies.map((movie) => {
-    const movieController = new MovieController(listFilms);
+    const movieController = new MovieController(listFilms, onDataChange);
     movieController.render(movie);
 
     return movieController;
@@ -22,12 +22,25 @@ const renderFilms = (movies, listFilms) => {
 export default class PageController {
   constructor(container) {
     this._container = container;
+    this._onDataChange = this._onDataChange.bind(this);
 
     this._films = films.slice();
     this._showMoreComponent = new ShowMoreComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._filterComponent = new FilterComponent();
     this._filmListComponent = new FilmListComponent();
+  }
+
+  _onDataChange(movieController, oldData, newData) {
+    const index = this._films.findIndex((it) => it === oldData);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
+
+    movieController.render(this._films[index]);
   }
 
   render(filmsData) {
@@ -72,10 +85,10 @@ export default class PageController {
         }
 
         filmListContainer.innerHTML = null;
-        renderFilms(filmsData.slice(0, showingFilmsCount), filmListContainer);
+        renderFilms(filmsData.slice(0, showingFilmsCount), filmListContainer, this._onDataChange);
       });
 
-      renderFilms(filmsData.slice(0, showingFilmsCount), filmListContainer);
+      renderFilms(filmsData.slice(0, showingFilmsCount), filmListContainer, this._onDataChange);
 
       if (filmsData.length > SHOWING_FILMS_COUNT_ON_START) {
         render(filmsList, this._showMoreComponent.getElement(), Position.BEFOREEND);
@@ -90,8 +103,8 @@ export default class PageController {
           `.films-list--extra .films-list__container`
       );
 
-      renderFilms(filmsRated, filmsExtraElements[0]);
-      renderFilms(filmsCommented, filmsExtraElements[1]);
+      renderFilms(filmsRated, filmsExtraElements[0], this._onDataChange);
+      renderFilms(filmsCommented, filmsExtraElements[1], this._onDataChange);
     }
 
     this._showMoreComponent.setClickHandler(() => {
@@ -100,7 +113,7 @@ export default class PageController {
       showingFilmsCount = showingFilmsCount + SHOWING_FILMS_COUNT_BY_BUTTON;
       const filmListContainer = document.querySelector(`.films-list__container`);
 
-      renderFilms(filmsData.slice(prevTasksCount, showingFilmsCount), filmListContainer);
+      renderFilms(filmsData.slice(prevTasksCount, showingFilmsCount), filmListContainer, this._onDataChange);
 
       if (showingFilmsCount >= filmsData.length) {
         this._showMoreComponent.getElement().remove();
