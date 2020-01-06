@@ -10,9 +10,9 @@ import {render, Position} from "../utils";
 import {films, filmsRated, filmsCommented} from "../data";
 import MovieController from "./movie";
 
-const renderFilms = (movies, listFilms, onDataChange) => {
+const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
   return movies.map((movie) => {
-    const movieController = new MovieController(listFilms, onDataChange);
+    const movieController = new MovieController(listFilms, onDataChange, onViewChange);
     movieController.render(movie);
 
     return movieController;
@@ -23,12 +23,15 @@ export default class PageController {
   constructor(container) {
     this._container = container;
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
 
     this._films = films.slice();
     this._showMoreComponent = new ShowMoreComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._filterComponent = new FilterComponent();
     this._filmListComponent = new FilmListComponent();
+
+    this._showedMovieControllers = [];
   }
 
   _onDataChange(movieController, oldData, newData) {
@@ -41,6 +44,10 @@ export default class PageController {
     this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
 
     movieController.render(this._films[index]);
+  }
+
+  _onViewChange() {
+    this._showedMovieControllers.forEach((it) => it.setDefaultView());
   }
 
   render(filmsData) {
@@ -85,10 +92,12 @@ export default class PageController {
         }
 
         filmListContainer.innerHTML = null;
-        renderFilms(filmsData.slice(0, showingFilmsCount), filmListContainer, this._onDataChange);
+        const newFilms = renderFilms(filmsData.slice(0, showingFilmsCount), filmListContainer, this._onDataChange, this._onViewChange);
+        this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
       });
 
-      renderFilms(filmsData.slice(0, showingFilmsCount), filmListContainer, this._onDataChange);
+      const newFilms = renderFilms(filmsData.slice(0, showingFilmsCount), filmListContainer, this._onDataChange, this._onViewChange);
+      this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
       if (filmsData.length > SHOWING_FILMS_COUNT_ON_START) {
         render(filmsList, this._showMoreComponent.getElement(), Position.BEFOREEND);
@@ -103,17 +112,21 @@ export default class PageController {
           `.films-list--extra .films-list__container`
       );
 
-      renderFilms(filmsRated, filmsExtraElements[0], this._onDataChange);
-      renderFilms(filmsCommented, filmsExtraElements[1], this._onDataChange);
+      const rateFilms = renderFilms(filmsRated, filmsExtraElements[0], this._onDataChange, this._onViewChange);
+      this._showedMovieControllers = this._showedMovieControllers.concat(rateFilms);
+
+      const commentFilms = renderFilms(filmsCommented, filmsExtraElements[1], this._onDataChange, this._onViewChange);
+      this._showedMovieControllers = this._showedMovieControllers.concat(commentFilms);
     }
 
     this._showMoreComponent.setClickHandler(() => {
-
       const prevTasksCount = showingFilmsCount;
       showingFilmsCount = showingFilmsCount + SHOWING_FILMS_COUNT_BY_BUTTON;
       const filmListContainer = document.querySelector(`.films-list__container`);
 
-      renderFilms(filmsData.slice(prevTasksCount, showingFilmsCount), filmListContainer, this._onDataChange);
+      const newFilms = renderFilms(filmsData.slice(prevTasksCount, showingFilmsCount), filmListContainer, this._onDataChange, this._onViewChange);
+      this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
+
 
       if (showingFilmsCount >= filmsData.length) {
         this._showMoreComponent.getElement().remove();

@@ -1,16 +1,24 @@
 import FilmComponent from "../components/film";
 import FilmPopupComponent from "../components/film-details";
-import {render, Position} from "../utils";
+import {render, unrender, Position} from "../utils";
+
+const Mode = {
+  DEFAULT: `default`,
+  POPUP: `popup`
+};
 
 export default class MovieController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+
+    this._mode = Mode.DEFAULT;
 
     this._filmComponent = null;
     this._filmEditComponent = null;
     this._siteMainElement = document.querySelector(`.main`);
-    this._onEscKeyDown = this._onEscKeyDown.bind();
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
   _onEscKeyDown(evt) {
@@ -23,7 +31,17 @@ export default class MovieController {
   }
 
   _showPopup() {
+    this._onViewChange();
+    this._mode = Mode.POPUP;
     render(this._siteMainElement, this._filmPopupComponent.getElement(), Position.BEFOREEND);
+  }
+
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      // console.log(this._filmPopupComponent.getElement());
+      unrender(this._filmPopupComponent.getElement());
+      this._mode = Mode.DEFAULT;
+    }
   }
 
   render(film) {
@@ -46,7 +64,8 @@ export default class MovieController {
     });
 
     this._filmPopupComponent.setCloseClickHandler(() => {
-      this._siteMainElement.removeChild(this._filmPopupComponent.getElement());
+      unrender(this._filmPopupComponent.getElement());
+      // this._siteMainElement.removeChild(this._filmPopupComponent.getElement());
     });
 
     this._filmComponent.setWatchlistClickHandler((evt) => {
@@ -80,6 +99,7 @@ export default class MovieController {
       this._onDataChange(this, film, Object.assign({}, film, {
         watched: !film.watched
       }));
+
     });
 
     this._filmPopupComponent.setFavoriteClickHandler(() => {
