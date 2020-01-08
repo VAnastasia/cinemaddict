@@ -61,6 +61,16 @@ const NAMES = [
 
 const COUNTRIES = [`USA`, `United Kingdom`, `France`, `Canada`, `Spain`];
 
+const EMOTIONS = [`smile`, `sleeping`, `puke`, `angry`, `trophy`];
+const AUTHORS = [`John Doe`, `Tim Macoveev`, `Volan de Mord`, `Garry Potter`];
+const COMMENTS = [
+  `a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.`,
+  `Interesting setting and a good cast`,
+  `Booooooooooring`,
+  `Very very old. Meh`,
+  `Almost two hours? Seriously?`
+];
+
 const shuffleArray = (array) => {
   let j;
   let temp;
@@ -87,7 +97,20 @@ const getRandonNumber = (min, max) =>
 const getRandomBoolean = (chance = 0.5) =>
   Math.random() > chance;
 
+const TIME_WEEK = 7 * 24 * 60 * 60 * 1000;
+
+const getComment = () => ({
+  id: String(Math.round(Date.now() * Math.random())),
+  author: getRandomItemArray(AUTHORS),
+  comment: getRandomItemArray(COMMENTS),
+  date: Date.now() - getRandonNumber(0, TIME_WEEK),
+  emotion: getRandomItemArray(EMOTIONS)
+});
+
+const getCommentList = (count) => new Array(count).fill().map(getComment);
+
 const getFilm = () => ({
+  id: String(Math.round(Date.now() * Math.random())),
   title: getRandomItemArray(TITLES_FILMS),
   description: getDescription(DESCRIPTIONS),
   director: getRandomItemArray(NAMES),
@@ -96,17 +119,18 @@ const getFilm = () => ({
   poster: getRandomItemArray(POSTERS),
   genres: getRandomItemArray(GENRES),
   rating: getRandonNumber(0, 9).toFixed(1),
-  comments: getRandonNumber(0, 20),
-  year: formatDate(getRandonNumber(0, Date.now())),
+  year: getRandonNumber(0, Date.now()),
   age: getRandomItemArray(AGE_CATEGORIES),
   runtime: formatRuntime(getRandonNumber(20, 180)),
   country: getRandomItemArray(COUNTRIES),
   watchlist: getRandomBoolean(),
   watched: getRandomBoolean(),
   favorite: getRandomBoolean(),
+  comments: getCommentList(getRandonNumber(0, 10))
 });
 
 const getFilmList = (count) => new Array(count).fill().map(getFilm);
+
 
 export const films = getFilmList(FILMS_AMOUNT);
 
