@@ -1,11 +1,13 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {unrender} from "../utils";
+import moment from "moment";
+
 
 const createFilmPopupTemplate = ({
   title,
   description,
   rating,
-  // comments,
+  comments,
   year,
   poster,
   runtime,
@@ -61,7 +63,7 @@ const createFilmPopupTemplate = ({
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${year}</td>
+              <td class="film-details__cell">${moment(year).format(`DD MMMM YYYY`)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
@@ -112,11 +114,11 @@ const createFilmPopupTemplate = ({
 
           <div class="film-details__user-score">
             <div class="film-details__user-rating-poster">
-              <img src="./images/posters/the-great-flamarion.jpg" alt="film-poster" class="film-details__user-rating-img">
+              <img src="./images/posters/${poster}" alt="${poster}" class="film-details__user-rating-img">
             </div>
 
             <section class="film-details__user-rating-inner">
-              <h3 class="film-details__user-rating-title">The Great Flamarion</h3>
+              <h3 class="film-details__user-rating-title">${title}</h3>
 
               <p class="film-details__user-rating-feelings">How you feel it?</p>
 
@@ -157,61 +159,24 @@ const createFilmPopupTemplate = ({
 
     <div class="form-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
         <ul class="film-details__comments-list">
-          <li class="film-details__comment">
+        ${comments.slice().sort((a, b) => b.date - a.date).map((it) => {
+    return (`<li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji">
+              <img src="./images/emoji/${it.emotion}.png" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">Interesting setting and a good cast</p>
+              <p class="film-details__comment-text">${it.comment}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">Tim Macoveev</span>
-                <span class="film-details__comment-day">2019/12/31 23:59</span>
+                <span class="film-details__comment-author">${it.author}</span>
+                <span class="film-details__comment-day">${moment(it.date).startOf(`hour`).fromNow()}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/sleeping.png" width="55" height="55" alt="emoji">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Booooooooooring</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">2 days ago</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/puke.png" width="55" height="55" alt="emoji">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Very very old. Meh</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">2 days ago</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Almost two hours? Seriously?</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">Today</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
+          </li>`);
+  }).join(``)}
         </ul>
 
         <div class="film-details__new-comment">
