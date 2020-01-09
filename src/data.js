@@ -1,4 +1,4 @@
-import {formatDate, formatRuntime} from "./utils";
+import {formatRuntime} from "./utils";
 
 const FILMS_AMOUNT = 25;
 

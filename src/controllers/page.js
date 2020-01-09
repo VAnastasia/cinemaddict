@@ -20,8 +20,10 @@ const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
 };
 
 export default class PageController {
-  constructor(container) {
+  constructor(container, moviesModel) {
     this._container = container;
+    this._moviesModel = moviesModel;
+
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
 
@@ -50,8 +52,9 @@ export default class PageController {
     this._showedMovieControllers.forEach((it) => it.setDefaultView());
   }
 
-  render(filmsData) {
+  render() {
     const container = this._container;
+    const filmsData = this._moviesModel.getFilms();
     let showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
 
     if (filmsData.length === 0) {

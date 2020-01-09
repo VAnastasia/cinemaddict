@@ -69,7 +69,6 @@ export default class MovieController {
 
     this._filmPopupComponent.setCloseClickHandler(() => {
       unrender(this._filmPopupComponent.getElement());
-      // this._siteMainElement.removeChild(this._filmPopupComponent.getElement());
     });
 
     this._filmComponent.setWatchlistClickHandler((evt) => {
@@ -77,8 +76,6 @@ export default class MovieController {
       this._onDataChange(this, film, Object.assign({}, film, {
         watchlist: !film.watchlist
       }));
-
-      this._filmComponent.rerender();
     });
 
     this._filmComponent.setWatchedClickHandler((evt) => {
@@ -86,8 +83,6 @@ export default class MovieController {
       this._onDataChange(this, film, Object.assign({}, film, {
         watched: !film.watched
       }));
-
-      this._filmComponent.rerender();
     });
 
     this._filmComponent.setFavoriteClickHandler((evt) => {
@@ -96,7 +91,6 @@ export default class MovieController {
         favorite: !film.favorite
       }));
 
-      this._filmComponent.rerender();
     });
 
     this._filmPopupComponent.setWatchlistClickHandler(() => {
@@ -123,7 +117,6 @@ export default class MovieController {
         if (oldFilmPopupComponent && oldFilmComponent) {
           replace(this._filmComponent, oldFilmComponent);
           replace(this._filmPopupComponent, oldFilmPopupComponent);
-          console.log(oldFilmComponent, this._filmComponent);
         } else {
           render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
 
