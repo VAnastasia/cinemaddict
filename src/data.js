@@ -61,7 +61,7 @@ const NAMES = [
 
 const COUNTRIES = [`USA`, `United Kingdom`, `France`, `Canada`, `Spain`];
 
-const EMOTIONS = [`smile`, `sleeping`, `puke`, `angry`, `trophy`];
+const EMOTIONS = [`smile`, `sleeping`, `puke`, `angry`];
 const AUTHORS = [`John Doe`, `Tim Macoveev`, `Volan de Mord`, `Garry Potter`];
 const COMMENTS = [
   `a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.`,

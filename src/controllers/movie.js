@@ -1,6 +1,6 @@
 import FilmComponent from "../components/film";
 import FilmPopupComponent from "../components/film-details";
-import {render, unrender, Position} from "../utils";
+import {render, unrender, replace, remove, Position} from "../utils";
 
 const Mode = {
   DEFAULT: `default`,
@@ -16,7 +16,7 @@ export default class MovieController {
     this._mode = Mode.DEFAULT;
 
     this._filmComponent = null;
-    this._filmEditComponent = null;
+    this._filmPopupComponent = null;
     this._siteMainElement = document.querySelector(`.main`);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
@@ -44,7 +44,11 @@ export default class MovieController {
     }
   }
 
-  render(film) {
+  render(film, mode = Mode.DEFAULT) {
+    const oldFilmComponent = this._filmComponent;
+    const oldFilmPopupComponent = this._filmPopupComponent;
+    this._mode = mode;
+
     this._filmComponent = new FilmComponent(film);
     this._filmPopupComponent = new FilmPopupComponent(film);
 
@@ -73,6 +77,8 @@ export default class MovieController {
       this._onDataChange(this, film, Object.assign({}, film, {
         watchlist: !film.watchlist
       }));
+
+      this._filmComponent.rerender();
     });
 
     this._filmComponent.setWatchedClickHandler((evt) => {
@@ -80,6 +86,8 @@ export default class MovieController {
       this._onDataChange(this, film, Object.assign({}, film, {
         watched: !film.watched
       }));
+
+      this._filmComponent.rerender();
     });
 
     this._filmComponent.setFavoriteClickHandler((evt) => {
@@ -87,6 +95,8 @@ export default class MovieController {
       this._onDataChange(this, film, Object.assign({}, film, {
         favorite: !film.favorite
       }));
+
+      this._filmComponent.rerender();
     });
 
     this._filmPopupComponent.setWatchlistClickHandler(() => {
@@ -108,6 +118,24 @@ export default class MovieController {
       }));
     });
 
-    render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldFilmPopupComponent && oldFilmComponent) {
+          replace(this._filmComponent, oldFilmComponent);
+          replace(this._filmPopupComponent, oldFilmPopupComponent);
+          console.log(oldFilmComponent, this._filmComponent);
+        } else {
+          render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
+
+        }
+        break;
+      case Mode.POPUP:
+        if (oldFilmPopupComponent && oldFilmComponent) {
+          remove(oldFilmComponent);
+          remove(oldFilmPopupComponent);
+        }
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        render(this._container, this._taskFilmPopupComponent.getElement(), Position.BEFOREEND);
+    }
   }
 }

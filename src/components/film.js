@@ -1,5 +1,5 @@
 import {truncateString} from "../utils";
-import AbstractComponent from "./abstract-component";
+import AbstractSmartComponent from "./abstract-smart-component";
 import moment from "moment";
 
 const createFilmTemplate = ({
@@ -35,7 +35,7 @@ const createFilmTemplate = ({
         </article>`;
 };
 
-export default class FilmComponent extends AbstractComponent {
+export default class FilmComponent extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
@@ -43,6 +43,10 @@ export default class FilmComponent extends AbstractComponent {
 
   getTemplate() {
     return createFilmTemplate(this._film);
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
   }
 
   setTitleClickHandler(handler) {
@@ -73,5 +77,9 @@ export default class FilmComponent extends AbstractComponent {
   setFavoriteClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--favorite`)
     .addEventListener(`click`, handler);
+  }
+
+  _subscribeOnEvents() {
+
   }
 }
