@@ -44,6 +44,12 @@ export default class MovieController {
     }
   }
 
+  destroy() {
+    remove(this._filmPopupComponent);
+    remove(this._filmComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
   render(film, mode = Mode.DEFAULT) {
     const oldFilmComponent = this._filmComponent;
     const oldFilmPopupComponent = this._filmPopupComponent;

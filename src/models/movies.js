@@ -1,24 +1,33 @@
+import {getFilmsByFilter, FilterType} from "../controllers/filter";
+
 export default class MoviesModel {
   constructor() {
     this._films = [];
-    this._onDataChangeHandlers = [];
+    this._activeFilterType = FilterType.ALL;
+    this._dataChangeHandlers = [];
+    this._filterChangeHandlers = [];
   }
 
   _callHandlers(handlers) {
     handlers.forEach((handler) => handler());
   }
 
-  getFilmsAll() {
-    return this._films;
+  getFilms() {
+    return getFilmsByFilter(this._films, this._activeFilterType);
   }
 
-  getFilms() {
+  getFilmsAll() {
     return this._films;
   }
 
   setFilms(films) {
     this._films = Array.from(films);
-    // this._callHandlers(this._dataChangeHandlers);
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
+  setFilter(filterType) {
+    this._activeFilterType = filterType;
+    this._callHandlers(this._filterChangeHandlers);
   }
 
   updateFilm(id, film) {
@@ -32,5 +41,13 @@ export default class MoviesModel {
 
     this._callHandlers(this._dataChangeHandlers);
     return true;
+  }
+
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
   }
 }
