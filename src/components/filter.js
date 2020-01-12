@@ -1,35 +1,40 @@
+// import {groupedFilms} from "../data";
 import AbstractComponent from "./abstract-component";
 
-const createFilterTemplate = () => {
-  return `<ul class="sort">
-    <li><a href="#" data-sort-type="default" class="sort__button sort__button--active">Sort by default</a></li>
-    <li><a href="#" data-sort-type="date" class="sort__button">Sort by date</a></li>
-    <li><a href="#" data-sort-type="rating" class="sort__button">Sort by rating</a></li>
-  </ul>`;
+const createFilterMarkup = (filter, isChecked) => {
+  const {name, count} = filter;
+
+  if (name === `all`) {
+    return `<a href="#all" data-filter="all" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}">All movies</a>`;
+  } else {
+    return `<a href="#${name}" data-filter="${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}">${name[0].toUpperCase()}${name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`;
+  }
+};
+
+const createFilterTemplate = (filters) => {
+  const filtersMarkup = filters.map((it) => createFilterMarkup(it, it.checked)).join(`\n`);
+
+  return `<nav class="main-navigation">
+    ${filtersMarkup}
+    <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
+  </nav>`;
 };
 
 export default class FilterComponent extends AbstractComponent {
-  getTemplate() {
-    return createFilterTemplate();
+  constructor(filters) {
+    super();
+    this._filters = filters;
   }
 
-  setSortTypeChangeHandler(handler) {
+  getTemplate() {
+    return createFilterTemplate(this._filters);
+  }
+
+  setFilterChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
-
-      if (evt.target.tagName !== `A`) {
-        return;
-      }
-
-      const sortType = evt.target.dataset.sortType;
-
-      if (this._currenSortType === sortType) {
-        return;
-      }
-
-      this._currenSortType = sortType;
-
-      handler(this._currenSortType);
+      const filterName = evt.target.dataset.filter;
+      handler(filterName);
     });
   }
 }
