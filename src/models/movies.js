@@ -8,6 +8,10 @@ export default class MoviesModel {
     handlers.forEach((handler) => handler());
   }
 
+  getFilmsAll() {
+    return this._films;
+  }
+
   getFilms() {
     return this._films;
   }

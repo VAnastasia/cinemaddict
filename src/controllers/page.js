@@ -4,7 +4,7 @@ const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
 import ShowMoreComponent from "../components/show-more";
 import FilmExtraListComponent from "../components/film-extra-list";
 import NoFilmsComponent from "../components/no-films";
-import FilterComponent from "../components/filter";
+import SortComponent from "../components/sort";
 import FilmListComponent from "../components/film-list";
 import {render, Position} from "../utils";
 import {films, filmsRated, filmsCommented} from "../data";
@@ -30,7 +30,7 @@ export default class PageController {
     this._films = films.slice();
     this._showMoreComponent = new ShowMoreComponent();
     this._noFilmsComponent = new NoFilmsComponent();
-    this._filterComponent = new FilterComponent();
+    this._sortComponent = new SortComponent();
     this._filmListComponent = new FilmListComponent();
 
     this._showedMovieControllers = [];
@@ -54,43 +54,43 @@ export default class PageController {
 
   render() {
     const container = this._container;
-    const filmsData = this._moviesModel.getFilms();
+    let filmsData = this._moviesModel.getFilms();
     let showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
 
     if (filmsData.length === 0) {
       render(container, this._noFilmsComponent.getElement(), Position.BEFOREEND);
     } else {
-      render(container, this._filterComponent.getElement(), Position.BEFOREEND);
+      render(container, this._sortComponent.getElement(), Position.BEFOREEND);
       render(container, this._filmListComponent.getElement(), Position.BEFOREEND);
 
       const filmsList = document.querySelector(`.films-list`);
       const filmListContainer = document.querySelector(`.films-list__container`);
 
-      const filterButtons = this._filterComponent.getElement().querySelectorAll(`.sort__button`);
+      const sortButtons = this._sortComponent.getElement().querySelectorAll(`.sort__button`);
 
-      const activeFilter = (filter) => {
-        Array.from(filterButtons).filter((button) => {
-          return button.dataset.sortType === filter;
+      const activeSort = (sort) => {
+        Array.from(sortButtons).filter((button) => {
+          return button.dataset.sortType === sort;
         })[0].classList.add(`sort__button--active`);
       };
 
-      this._filterComponent.setSortTypeChangeHandler((sortType) => {
-        filterButtons.forEach((button) => {
+      this._sortComponent.setSortTypeChangeHandler((sortType) => {
+        sortButtons.forEach((button) => {
           button.classList.remove(`sort__button--active`);
         });
 
         switch (sortType) {
           case `date`:
             filmsData = this._films.slice().sort((a, b) => new Date(a.year) - new Date(b.year));
-            activeFilter(`date`);
+            activeSort(`date`);
             break;
           case `rating`:
             filmsData = this._films.slice().sort((a, b) => b.rating - a.rating);
-            activeFilter(`rating`);
+            activeSort(`rating`);
             break;
           case `default`:
             filmsData = this._films.slice();
-            activeFilter(`default`);
+            activeSort(`default`);
             break;
         }
 
