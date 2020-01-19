@@ -1,7 +1,7 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {unrender} from "../utils";
+import {formatRuntime} from "../utils";
 import moment from "moment";
-
 
 const createFilmPopupTemplate = ({
   title,
@@ -73,7 +73,7 @@ const createFilmPopupTemplate = ({
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${runtime}</td>
+              <td class="film-details__cell">${formatRuntime(runtime)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>

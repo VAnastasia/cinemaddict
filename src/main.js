@@ -22,16 +22,17 @@ const siteHeaderElement = document.querySelector(`.header`);
 const siteFooterElement = document.querySelector(`footer`);
 
 render(siteHeaderElement, new ProfileComponent().getElement(), Position.BEFOREEND);
-const filterController = new FilterController(siteMainElement, movieModel);
 // render(siteMainElement, new FilterComponent().getElement(), Position.BEFOREEND);
 // render(siteMainElement, new FilterComponent().getElement(), Position.BEFOREEND);
 // render(siteMainElement, new FilmListComponent().getElement(), Position.BEFOREEND);
 
-const pageController = new PageController(siteMainElement, movieModel);
+const pageController = new PageController(siteMainElement, movieModel, api);
 
 api.getFilms()
   .then((filmsAll) => {
     movieModel.setFilms(filmsAll);
+
+    const filterController = new FilterController(siteMainElement, movieModel);
     filterController.render();
 
     render(siteFooterElement, new FooterStatisticComponent(filmsAll.length).getElement(), Position.BEFOREEND);

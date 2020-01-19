@@ -1,5 +1,6 @@
 import {truncateString} from "../utils";
 import AbstractComponent from "./abstract-component";
+import {formatRuntime} from "../utils";
 import moment from "moment";
 
 const createFilmTemplate = ({
@@ -20,7 +21,7 @@ const createFilmTemplate = ({
           <p class="film-card__rating">${rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${moment(year).format(`YYYY`)}</span>
-            <span class="film-card__duration">${runtime}</span>
+            <span class="film-card__duration">${formatRuntime(runtime)}</span>
             <span class="film-card__genre">${genres.length > 0 ? genres[0] : ``}</span>
           </p>
           <img src="./${poster}" alt="" class="film-card__poster">
