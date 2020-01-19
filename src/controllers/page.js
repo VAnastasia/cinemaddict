@@ -7,8 +7,9 @@ import NoFilmsComponent from "../components/no-films";
 import SortComponent from "../components/sort";
 import FilmListComponent from "../components/film-list";
 import {render, Position} from "../utils";
-import {filmsRated, filmsCommented} from "../data";
+// import {filmsRated, filmsCommented} from "../data";
 import MovieController from "./movie";
+import API from "../api";
 
 const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
   return movies.map((movie) => {
@@ -20,9 +21,10 @@ const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
 };
 
 export default class PageController {
-  constructor(container, moviesModel) {
+  constructor(container, moviesModel, api) {
     this._container = container;
     this._moviesModel = moviesModel;
+    this._api = api;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -40,15 +42,41 @@ export default class PageController {
   }
 
   _onDataChange(movieController, oldData, newData) {
-    const index = this._films.findIndex((it) => it === oldData);
+    // const index = this._films.findIndex((it) => it === oldData);
+    //
+    // if (index === -1) {
+    //   return;
+    // }
+    //
+    // this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
+    //
+    // movieController.render(this._films[index]);
 
-    if (index === -1) {
-      return;
-    }
+    this._api.updateFilm(oldData.id, newData)
+      .then((movieModel) => {
+        newData.comments = movieModel.comments;
+        const isSuccess = this._moviesModel.updateFilm(oldData.id, movieModel);
 
-    this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
+        // if (isSuccess) {
+        //   movieController.render(newData);
+        // }
 
-    movieController.render(this._films[index]);
+        this._api.getComments(newData.id).then((commentsList) => {
+          newData.comments = movieModel.comments;
+          newData.commentsList = commentsList;
+          if (isSuccess) {
+            movieController.render(newData);
+          }
+        });
+
+        this._renderShowMoreButton();
+        // this._filterController.updateData();
+        // this.updateStatsComponent();
+        // this.setFiltersHandler();
+        // this.setFilterStatisticClickHandler();
+      }).catch(() => {
+        // errorHandler();
+      });
   }
 
   _onViewChange() {
@@ -83,6 +111,15 @@ export default class PageController {
 
   _renderExtraLists() {
     const filmsContainer = document.querySelector(`.films`);
+    const filmsRated = this._films
+      .slice()
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 2);
+
+    const filmsCommented = this._films
+      .slice()
+      .sort((a, b) => b.commentsAmount - a.commentsAmount)
+      .slice(0, 2);
 
     render(filmsContainer, new FilmExtraListComponent(`Top rated`).getElement(), Position.BEFOREEND);
     render(filmsContainer, new FilmExtraListComponent(`Most commented`).getElement(), Position.BEFOREEND);
@@ -162,7 +199,7 @@ export default class PageController {
 
         switch (sortType) {
           case `date`:
-            filmsData = this._films.slice().sort((a, b) => new Date(a.year) - new Date(b.year));
+            filmsData = this._films.slice().sort((a, b) => new Date(b.year) - new Date(a.year));
             activeSort(`date`);
             break;
           case `rating`:

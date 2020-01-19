@@ -1,6 +1,7 @@
 import FilmComponent from "../components/film";
 import FilmPopupComponent from "../components/film-details";
 import {render, unrender, replace, remove, Position} from "../utils";
+import MovieModel from "../models/movie";
 
 const Mode = {
   DEFAULT: `default`,
@@ -55,6 +56,8 @@ export default class MovieController {
     const oldFilmPopupComponent = this._filmPopupComponent;
     this._mode = mode;
 
+    // console.log(film);
+
     this._filmComponent = new FilmComponent(film);
     this._filmPopupComponent = new FilmPopupComponent(film);
 
@@ -79,43 +82,54 @@ export default class MovieController {
 
     this._filmComponent.setWatchlistClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {
-        watchlist: !film.watchlist
-      }));
+      const newFilm = MovieModel.clone(film);
+      newFilm.watchlist = !newFilm.watchlist;
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmComponent.setWatchedClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {
-        watched: !film.watched
-      }));
+      const newFilm = MovieModel.clone(film);
+      newFilm.watched = !newFilm.watched;
+
+      if (!newFilm.watched) {
+        newFilm.personalRating = 0;
+      }
+      newFilm.watchedDate = newFilm.watchedDate ? new Date().toISOString() : null;
+
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmComponent.setFavoriteClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, film, Object.assign({}, film, {
-        favorite: !film.favorite
-      }));
+      const newFilm = MovieModel.clone(film);
+      newFilm.favorite = !newFilm.favorite;
+      this._onDataChange(this, film, newFilm);
 
     });
 
     this._filmPopupComponent.setWatchlistClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        watchlist: !film.watchlist
-      }));
+      const newFilm = MovieModel.clone(film);
+      newFilm.watchlist = !newFilm.watchlist;
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmPopupComponent.setWatchedClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        watched: !film.watched
-      }));
+      const newFilm = MovieModel.clone(film);
+      newFilm.watched = !newFilm.watched;
 
+      if (!newFilm.watched) {
+        newFilm.personalRating = 0;
+      }
+      newFilm.watchedDate = newFilm.watchedDate ? new Date().toISOString() : null;
+
+      this._onDataChange(this, film, newFilm);
     });
 
     this._filmPopupComponent.setFavoriteClickHandler(() => {
-      this._onDataChange(this, film, Object.assign({}, film, {
-        favorite: !film.favorite
-      }));
+      const newFilm = MovieModel.clone(film);
+      newFilm.favorite = !newFilm.favorite;
+      this._onDataChange(this, film, newFilm);
     });
 
     switch (mode) {

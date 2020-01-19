@@ -1,13 +1,16 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {unrender} from "../utils";
+import {formatRuntime} from "../utils";
 import moment from "moment";
-
 
 const createFilmPopupTemplate = ({
   title,
+  alterTitle,
   description,
   rating,
+  personalRating,
   comments,
+  commentsAmount,
   year,
   poster,
   runtime,
@@ -31,20 +34,23 @@ const createFilmPopupTemplate = ({
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+          <img class="film-details__poster-img" src="./${poster}" alt="">
 
-          <p class="film-details__age">${age}</p>
+          <p class="film-details__age">${age}+</p>
         </div>
 
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
               <h3 class="film-details__title">${title}</h3>
-              <p class="film-details__title-original">${title}</p>
+              <p class="film-details__title-original">${alterTitle}</p>
             </div>
 
             <div class="film-details__rating">
               <p class="film-details__total-rating">${rating}</p>
+              ${watched ?
+    `<p class="film-details__user-rating">Your rate ${personalRating}</p>` : ``}
+
             </div>
           </div>
 
@@ -67,7 +73,7 @@ const createFilmPopupTemplate = ({
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${runtime}</td>
+              <td class="film-details__cell">${formatRuntime(runtime)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -106,7 +112,7 @@ const createFilmPopupTemplate = ({
     </div>
 
     ${watched ?
-      `<div class="form-details__middle-container">
+    `<div class="form-details__middle-container">
         <section class="film-details__user-rating-wrap">
           <div class="film-details__user-rating-controls">
             <button class="film-details__watched-reset" type="button">Undo</button>
@@ -114,7 +120,7 @@ const createFilmPopupTemplate = ({
 
           <div class="film-details__user-score">
             <div class="film-details__user-rating-poster">
-              <img src="./images/posters/${poster}" alt="${poster}" class="film-details__user-rating-img">
+              <img src="./${poster}" alt="${poster}" class="film-details__user-rating-img">
             </div>
 
             <section class="film-details__user-rating-inner">
@@ -155,11 +161,11 @@ const createFilmPopupTemplate = ({
           </div>
         </section>
       </div>`
-       : ``}
+    : ``}
 
     <div class="form-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsAmount}</span></h3>
 
         <ul class="film-details__comments-list">
         ${comments.slice().sort((a, b) => b.date - a.date).map((it) => {
