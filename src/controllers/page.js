@@ -7,7 +7,7 @@ import NoFilmsComponent from "../components/no-films";
 import SortComponent from "../components/sort";
 import FilmListComponent from "../components/film-list";
 import {render, Position} from "../utils";
-import {filmsRated, filmsCommented} from "../data";
+// import {filmsRated, filmsCommented} from "../data";
 import MovieController from "./movie";
 
 const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
@@ -83,6 +83,15 @@ export default class PageController {
 
   _renderExtraLists() {
     const filmsContainer = document.querySelector(`.films`);
+    const filmsRated = this._films
+      .slice()
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 2);
+
+    const filmsCommented = this._films
+      .slice()
+      .sort((a, b) => b.commentsAmount - a.commentsAmount)
+      .slice(0, 2);
 
     render(filmsContainer, new FilmExtraListComponent(`Top rated`).getElement(), Position.BEFOREEND);
     render(filmsContainer, new FilmExtraListComponent(`Most commented`).getElement(), Position.BEFOREEND);
@@ -162,7 +171,7 @@ export default class PageController {
 
         switch (sortType) {
           case `date`:
-            filmsData = this._films.slice().sort((a, b) => new Date(a.year) - new Date(b.year));
+            filmsData = this._films.slice().sort((a, b) => new Date(b.year) - new Date(a.year));
             activeSort(`date`);
             break;
           case `rating`:

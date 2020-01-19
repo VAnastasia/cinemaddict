@@ -59,7 +59,6 @@ export default class FilterController {
   }
 
   _onDataChange() {
-    console.log(`change`);
     this.render();
   }
 

@@ -55,6 +55,8 @@ export default class MovieController {
     const oldFilmPopupComponent = this._filmPopupComponent;
     this._mode = mode;
 
+    // console.log(film);
+
     this._filmComponent = new FilmComponent(film);
     this._filmPopupComponent = new FilmPopupComponent(film);
 

@@ -3,6 +3,7 @@ import {getFilmsByFilter, FilterType} from "../controllers/filter";
 export default class MoviesModel {
   constructor() {
     this._films = [];
+
     this._activeFilterType = FilterType.ALL;
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
@@ -18,6 +19,10 @@ export default class MoviesModel {
 
   getFilmsAll() {
     return this._films;
+  }
+
+  setCommentsFilm(comments, filmId) {
+    this._films[filmId][`comments`] = comments;
   }
 
   setFilms(films) {

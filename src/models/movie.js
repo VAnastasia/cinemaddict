@@ -1,0 +1,36 @@
+import {formatRuntime} from "../utils";
+
+export default class MovieModel {
+  constructor(data) {
+    this.id = data[`id`];
+    this.title = data[`film_info`][`title`];
+    this.alterTitle = data[`film_info`][`alternative_title`];
+    this.description = data[`film_info`][`description`];
+    this.rating = data[`film_info`][`total_rating`];
+    this.poster = data[`film_info`][`poster`];
+    this.age = data[`film_info`][`age_rating`];
+    this.director = data[`film_info`][`director`];
+    this.writers = data[`film_info`][`writers`];
+    this.actors = data[`film_info`][`actors`];
+    this.year = data[`film_info`][`release`][`date`];
+    this.country = data[`film_info`][`release`][`release_country`];
+    this.runtime = formatRuntime(data[`film_info`][`runtime`]);
+    this.genres = data[`film_info`][`genre`];
+    this.personalRating = data[`user_details`][`personal_rating`];
+    this.watchlist = data[`user_details`][`watchlist`];
+    this.watched = data[`user_details`][`already_watched`];
+    this.watchedDate = data[`user_details`][`watching_date`];
+    this.favorite = data[`user_details`][`favorite`];
+    this.comments = [];
+    this.commentsId = data[`comments`];
+    this.commentsAmount = data[`comments`].length;
+  }
+
+  static parseFilm(data) {
+    return new MovieModel(data);
+  }
+
+  static parseFilms(data) {
+    return data.map(MovieModel.parseFilm);
+  }
+}
