@@ -195,26 +195,26 @@ export default class PageController {
           button.classList.remove(`sort__button--active`);
         });
 
-        let filmsData = this._moviesModel.getFilms();
+        const filmsData = this._moviesModel.getFilms();
 
         switch (sortType) {
           case `date`:
-            filmsData = this._films.slice().sort((a, b) => new Date(b.year) - new Date(a.year));
+            this._films = filmsData.slice().sort((a, b) => new Date(b.year) - new Date(a.year));
             activeSort(`date`);
             break;
           case `rating`:
-            filmsData = this._films.slice().sort((a, b) => b.rating - a.rating);
+            this._films = filmsData.slice().sort((a, b) => b.rating - a.rating);
             activeSort(`rating`);
             break;
           case `default`:
-            filmsData = this._films.slice();
+            this._films = filmsData.slice();
             activeSort(`default`);
             break;
         }
 
         this._removeFilms();
         this._removeExtraLists();
-        this._renderFilms(filmsData);
+        this._renderFilms(this._films);
         this._renderExtraLists();
       });
 
