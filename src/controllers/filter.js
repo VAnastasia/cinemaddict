@@ -5,7 +5,8 @@ export const FilterType = {
   ALL: `all`,
   WATCHLIST: `watchlist`,
   HISTORY: `history`,
-  FAVORITES: `favorites`
+  FAVORITES: `favorites`,
+  STATS: `stats`
 };
 
 export const getFilmsByFilter = (films, filterType) => {
@@ -18,6 +19,8 @@ export const getFilmsByFilter = (films, filterType) => {
       return films.filter((film) => film.watched);
     case FilterType.FAVORITES:
       return films.filter((film) => film.favorite);
+    case FilterType.STATS:
+      return films.slice();
   }
 
   return films;
@@ -34,6 +37,16 @@ export default class FilterController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._moviesModel.setDataChangeHandler(this._onDataChange);
+  }
+
+  _onDataChange() {
+    this.render();
+  }
+
+  _onFilterChange(filterType) {
+    this._moviesModel.setFilter(filterType);
+    this._activeFilterType = filterType;
+    this.render();
   }
 
   render() {
@@ -58,14 +71,7 @@ export default class FilterController {
     }
   }
 
-  _onDataChange() {
-    this.render();
-  }
-
-  _onFilterChange(filterType) {
-    this._moviesModel.setFilter(filterType);
-    this._activeFilterType = filterType;
-    this.render();
-
+  setOnChange(menuItem) {
+    this._onFilterChange(menuItem);
   }
 }
