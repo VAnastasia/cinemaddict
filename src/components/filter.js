@@ -39,6 +39,10 @@ export default class FilterComponent extends AbstractComponent {
     });
   }
 
+  setShowStatisticHandler(handler) {
+    this.getElement().addEventListener(`click`, handler);
+  }
+
   clearActiveItem() {
     const items = this.getElement().querySelectorAll(`main-navigation__item`);
     items.forEach((it) => {

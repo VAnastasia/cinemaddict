@@ -11,6 +11,8 @@ import {render, Position} from "../utils";
 import MovieController from "./movie";
 import API from "../api";
 
+const HIDDEN_CLASS = `visually-hidden`;
+
 const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
   return movies.map((movie) => {
     const movieController = new MovieController(listFilms, onDataChange, onViewChange);
@@ -172,12 +174,18 @@ export default class PageController {
     this._showMoreComponent.setClickHandler(() => this._onShowMoreClick());
   }
 
-  hide() {
-    this._container.hide();
+  show() {
+    if (this._filmListComponent && this._sortComponent) {
+      this._filmListComponent.getElement().classList.remove(HIDDEN_CLASS);
+      this._sortComponent.getElement().classList.remove(HIDDEN_CLASS);
+    }
   }
 
-  show() {
-    this._container.show();
+  hide() {
+    if (this._filmListComponent && this._sortComponent) {
+      this._filmListComponent.getElement().classList.add(HIDDEN_CLASS);
+      this._sortComponent.getElement().classList.add(HIDDEN_CLASS);
+    }
   }
 
   render() {

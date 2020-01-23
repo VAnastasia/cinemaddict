@@ -27,9 +27,10 @@ export const getFilmsByFilter = (films, filterType) => {
 };
 
 export default class FilterController {
-  constructor(container, moviesModel) {
+  constructor(container, moviesModel, showStatisticsHandler) {
     this._container = container;
     this._moviesModel = moviesModel;
+    this._showStatisticsHandler = showStatisticsHandler;
 
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
@@ -63,15 +64,12 @@ export default class FilterController {
     const oldComponent = this._filterComponent;
     this._filterComponent = new FilterComponent(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+    this._filterComponent.setShowStatisticHandler(this._showStatisticsHandler);
 
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
     } else {
       render(container, this._filterComponent.getElement(), Position.BEFOREEND);
     }
-  }
-
-  setOnChange(menuItem) {
-    this._onFilterChange(menuItem);
   }
 }

@@ -30,11 +30,26 @@ render(siteHeaderElement, new ProfileComponent().getElement(), Position.BEFOREEN
 // render(siteMainElement, new FilmListComponent().getElement(), Position.BEFOREEND);
 
 const pageController = new PageController(siteMainElement, movieModel, api);
-const filterController = new FilterController(siteMainElement, movieModel);
+// const filterComponent = new FilterComponent().getElement();
+
+const showStatisticsHandler = (page, statistics) => {
+  return (evt) => {
+
+    if (evt.target.className.includes(`main-navigation__item--additional`)) {
+      page.hide();
+      statistics.show();
+    } else {
+      page.show();
+      statistics.hide();
+    }
+  };
+};
 
 api.getFilms()
   .then((filmsAll) => {
     movieModel.setFilms(filmsAll);
+
+    const filterController = new FilterController(siteMainElement, movieModel, showStatisticsHandler(pageController, statisticsComponent));
 
     filterController.render();
 
@@ -50,18 +65,3 @@ api.getFilms()
     });
   });
 
-
-filterController.setOnChange((menuItem) => {
-  switch (menuItem) {
-    case FilterType.STATS:
-      FilterComponent.setActiveItem(FilterType.STATS);
-      pageController.hide();
-      statisticsComponent.show();
-      break;
-
-    default:
-      pageController.show();
-      statisticsComponent.hide();
-      break;
-  }
-});
