@@ -1,12 +1,17 @@
-import AbstractComponent from "./abstract-component";
+import AbstractSmartComponent from "./abstract-smart-component";
+import {formatRuntime} from "../utils";
+import {defineUserRating} from "./profile";
 
-const createStatisticsTemplate = () => {
+// import Chart from 'chart.js';
+// import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+const createStatisticsTemplate = (watchedFilmsAmount, totalDuration, topGenre, filmWatcheAmount) => {
   return (
     `<section class="statistic">
        <p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">Sci-Fighter</span>
+        <span class="statistic__rank-label">${defineUserRating(filmWatcheAmount)}</span>
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -31,15 +36,15 @@ const createStatisticsTemplate = () => {
       <ul class="statistic__text-list">
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+          <p class="statistic__item-text">${watchedFilmsAmount} <span class="statistic__item-description">movies</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+          <p class="statistic__item-text">${totalDuration}</p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
+          <p class="statistic__item-text">${topGenre}</p>
         </li>
       </ul>
 
@@ -51,8 +56,72 @@ const createStatisticsTemplate = () => {
   );
 };
 
-export default class StatisticsComponent extends AbstractComponent {
+export default class StatisticsComponent extends AbstractSmartComponent {
+  constructor(films) {
+    super();
+
+    this._films = films;
+    this._filmsWatched = this._films.filter((film) => film.watched);
+    this._genres = new Set([]);
+    this._genresWatched = {};
+  }
+
+  getWatchedFilms() {
+    return this._filmsWatched.length;
+  }
+
+  getTotalDuration() {
+    const totalTime = this._filmsWatched
+      .map((film) => film.runtime)
+      .reduce((total, runtime) => total + runtime);
+    return `${Math.floor(totalTime / 60)}<span class="statistic__item-description">h</span> ${totalTime % 60}<span class="statistic__item-description">m</span>`;
+  }
+
+  getGenres() {
+    this._filmsWatched.forEach((film) => {
+      film.genres.forEach((genre) => {
+        this._genres.add(genre);
+      });
+    });
+  }
+
+  getWatchedGenres() {
+    this.getGenres();
+    const genres = Array.from(this._genres);
+    genres.forEach((genre) => {
+      this._genresWatched[genre] = 0;
+
+    });
+  }
+
+  getWatchedGenresAmount() {
+    this.getWatchedGenres();
+    this._filmsWatched.forEach((film) => {
+      film.genres.forEach((genre) => {
+        this._genresWatched[genre] = this._genresWatched[genre] + 1;
+      });
+
+    });
+  }
+
+  getTopGenre() {
+    this.getWatchedGenresAmount();
+    const max = Math.max(...Object.values(this._genresWatched));
+    let topGenre = ``;
+
+    Object.keys(this._genresWatched).forEach((genre) => {
+
+      if (this._genresWatched[genre] === max) {
+        topGenre = genre;
+        return;
+      }
+
+    });
+    return topGenre;
+
+  }
+
   getTemplate() {
-    return createStatisticsTemplate();
+    return createStatisticsTemplate(this.getWatchedFilms(), this.getTotalDuration(), this.getTopGenre(), this.getWatchedFilms());
   }
 }
