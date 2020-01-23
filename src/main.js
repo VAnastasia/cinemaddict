@@ -35,6 +35,7 @@ const showStatisticsHandler = (page, statistics) => {
     if (evt.target.className.includes(`main-navigation__item--additional`)) {
       page.hide();
       statistics.show();
+      // console.log(statistics);
     } else {
       page.show();
       statistics.hide();
@@ -48,7 +49,7 @@ api.getFilms()
 
     render(siteHeaderElement, new ProfileComponent(filmsAll).getElement(), Position.BEFOREEND);
 
-    const statisticsComponent = new StatisticsComponent(filmsAll);
+    const statisticsComponent = new StatisticsComponent(movieModel);
 
     const filterController = new FilterController(siteMainElement, movieModel, showStatisticsHandler(pageController, statisticsComponent));
 
@@ -65,4 +66,3 @@ api.getFilms()
 
     });
   });
-

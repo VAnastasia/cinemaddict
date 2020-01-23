@@ -8,7 +8,6 @@ import moment from "moment";
 const compareDates = (compareDate) => {
   const today = moment(Date.now());
   const date = moment(compareDate);
-  console.log(today.diff(date, `days`, true));
   return today.diff(date, `days`, true);
 };
 
@@ -19,7 +18,7 @@ const compareDatesToday = (day) => {
 };
 
 const getFilmsByDays = (films, days) => {
-  return films.filter((film) => film.watchedDate <= days);
+  return films.filter((film) => compareDates(film.watchedDate) <= days);
 };
 
 const FILTERS = {
@@ -31,15 +30,22 @@ const FILTERS = {
 };
 
 const filtredFilms = (films) => {
+  console.log({
+    "all-time": films.slice(),
+    "today": films.slice().filter((film) => compareDatesToday(film.watchedDate)),
+    "week": getFilmsByDays(films.slice(), 7),
+    "month": getFilmsByDays(films.slice(), 30),
+    "year": getFilmsByDays(films.slice(), 365)
+  });
+
   return {
     "all-time": films.slice(),
     "today": films.slice().filter((film) => compareDatesToday(film.watchedDate)),
     "week": getFilmsByDays(films.slice(), 7),
     "month": getFilmsByDays(films.slice(), 30),
     "year": getFilmsByDays(films.slice(), 365)
-  }
-}
-
+  };
+};
 
 const createStatisticsTemplate = (watchedFilmsAmount, totalDuration, topGenre, filmWatchedAmount, activeFilter) => {
   return (
@@ -83,14 +89,18 @@ const createStatisticsTemplate = (watchedFilmsAmount, totalDuration, topGenre, f
 };
 
 export default class StatisticsComponent extends AbstractSmartComponent {
-  constructor(films) {
+  constructor(moviesModel) {
     super();
-
-    this._films = films;
+    this._moviesModel = moviesModel;
+    this._films = this._moviesModel.getFilmsAll();
     this._filmsWatched = this._films.filter((film) => film.watched);
     this._genres = new Set([]);
     this._genresWatched = {};
     this._activeFilter = `all-time`;
+  }
+
+  recoveryListeners() {
+
   }
 
   getWatchedFilms() {
@@ -104,31 +114,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     return `${Math.floor(totalTime / 60)}<span class="statistic__item-description">h</span> ${totalTime % 60}<span class="statistic__item-description">m</span>`;
   }
 
-  // getGenres() {
-  //   this._filmsWatched.forEach((film) => {
-  //     film.genres.forEach((genre) => {
-  //       this._genres.add(genre);
-  //     });
-  //   });
-  // }
-
-  // getWatchedGenres() {
-  //   // this.getGenres();
-  //   this._filmsWatched.forEach((film) => {
-  //     film.genres.forEach((genre) => {
-  //       this._genres.add(genre);
-  //     });
-  //   });
-
-  //   const genres = Array.from(this._genres);
-  //   genres.map((genre) => {
-  //     this._genresWatched[genre] = 0;
-  //   });
-  // }
-
   getWatchedGenresAmount() {
-    // this.getWatchedGenres();
-
     this._filmsWatched.forEach((film) => {
       film.genres.forEach((genre) => {
         this._genres.add(genre);
@@ -171,8 +157,8 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`.statistic__filters`)
       .addEventListener(`click`, (evt) => {
         if (evt.target.tagName === `INPUT`) {
-          if (this._currentFilter !== evt.target.value) {
-            this._currentFilter = evt.target.value;
+          if (this._activeFilter !== evt.target.value) {
+            this._activeFilter = evt.target.value;
             this.rerender();
             this.renderChart();
           }
@@ -180,13 +166,31 @@ export default class StatisticsComponent extends AbstractSmartComponent {
       });
   }
 
+  setActiveFilter(activeFilter) {
+    this._activeFilter = activeFilter;
+    this.rerender();
+  }
+
+  show() {
+    super.show();
+    this.update(this._moviesModel.getFilmsAll());
+  }
+
+  rerender() {
+    super.rerender();
+
+    // this.setActiveFilter(this._activeFilter);
+
+    // this._renderCharts();
+  }
+
   update(newFilmsData) {
     this._films = newFilmsData;
     this.rerender();
-    this.renderChart();
+    // this._renderCharts();
   }
 
-  renderChart() {
+  _renderCharts() {
     if (this._chart) {
       this._chart.destroy();
       this._chart = null;

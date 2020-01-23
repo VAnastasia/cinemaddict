@@ -1,4 +1,5 @@
 import AbstractComponent from './abstract-component.js';
+const HIDDEN_CLASS = `visually-hidden`;
 
 export default class AbstractSmartComponent extends AbstractComponent {
   recoveryListeners() {
@@ -15,5 +16,17 @@ export default class AbstractSmartComponent extends AbstractComponent {
     parent.replaceChild(newElement, oldElement);
 
     this.recoveryListeners();
+  }
+
+  show() {
+    if (this._element) {
+      this._element.classList.remove(HIDDEN_CLASS);
+    }
+  }
+
+  hide() {
+    if (this._element) {
+      this._element.classList.add(HIDDEN_CLASS);
+    }
   }
 }
