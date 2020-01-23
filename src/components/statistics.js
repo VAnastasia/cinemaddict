@@ -1,9 +1,22 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import {formatRuntime} from "../utils";
 import {defineUserRating} from "./profile";
 
-// import Chart from 'chart.js';
-// import ChartDataLabels from 'chartjs-plugin-datalabels';
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import moment from "moment";
+
+const compareDates = (compareDate) => {
+  const today = moment(Date.now());
+  const date = moment(compareDate);
+  console.log(today.diff(date, `days`, true));
+  return today.diff(date, `days`, true);
+};
+
+const getFilmsByDate = (films, days) => {
+  return films.filter((film) => film.watchedDate <= days);
+}
+
+compareDates(new Date(`2020-01-22T09:41:38.799Z`));
 
 const createStatisticsTemplate = (watchedFilmsAmount, totalDuration, topGenre, filmWatcheAmount) => {
   return (
