@@ -100,10 +100,11 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     this._activeFilter = `all-time`;
     this._chart = null;
     this._renderCharts();
+    this.setOnFilterClickHandler();
   }
 
   recoveryListeners() {
-
+    this.setOnFilterClickHandler();
   }
 
   getWatchedFilms() {
@@ -185,7 +186,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
 
   setActiveFilter(activeFilter) {
     this._activeFilter = activeFilter;
-    this.rerender();
+    // this.rerender();
   }
 
   show() {
@@ -196,7 +197,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
   rerender() {
     super.rerender();
 
-    // this.setActiveFilter(this._activeFilter);
+    this.setActiveFilter(this._activeFilter);
 
     this._renderCharts();
   }
