@@ -11,6 +11,8 @@ import {render, Position} from "../utils";
 import MovieController from "./movie";
 import API from "../api";
 
+const HIDDEN_CLASS = `visually-hidden`;
+
 const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
   return movies.map((movie) => {
     const movieController = new MovieController(listFilms, onDataChange, onViewChange);
@@ -172,6 +174,20 @@ export default class PageController {
     this._showMoreComponent.setClickHandler(() => this._onShowMoreClick());
   }
 
+  show() {
+    if (this._filmListComponent && this._sortComponent) {
+      this._filmListComponent.getElement().classList.remove(HIDDEN_CLASS);
+      this._sortComponent.getElement().classList.remove(HIDDEN_CLASS);
+    }
+  }
+
+  hide() {
+    if (this._filmListComponent && this._sortComponent) {
+      this._filmListComponent.getElement().classList.add(HIDDEN_CLASS);
+      this._sortComponent.getElement().classList.add(HIDDEN_CLASS);
+    }
+  }
+
   render() {
     const container = this._container;
     this._films = this._moviesModel.getFilms();
@@ -195,26 +211,26 @@ export default class PageController {
           button.classList.remove(`sort__button--active`);
         });
 
-        let filmsData = this._moviesModel.getFilms();
+        const filmsData = this._moviesModel.getFilms();
 
         switch (sortType) {
           case `date`:
-            filmsData = this._films.slice().sort((a, b) => new Date(b.year) - new Date(a.year));
+            this._films = filmsData.slice().sort((a, b) => new Date(b.year) - new Date(a.year));
             activeSort(`date`);
             break;
           case `rating`:
-            filmsData = this._films.slice().sort((a, b) => b.rating - a.rating);
+            this._films = filmsData.slice().sort((a, b) => b.rating - a.rating);
             activeSort(`rating`);
             break;
           case `default`:
-            filmsData = this._films.slice();
+            this._films = filmsData.slice();
             activeSort(`default`);
             break;
         }
 
         this._removeFilms();
         this._removeExtraLists();
-        this._renderFilms(filmsData);
+        this._renderFilms(this._films);
         this._renderExtraLists();
       });
 

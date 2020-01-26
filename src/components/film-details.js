@@ -47,7 +47,7 @@ const createFilmPopupTemplate = ({
             </div>
 
             <div class="film-details__rating">
-              <p class="film-details__total-rating">${rating}</p>
+              <p class="film-details__total-rating">${rating.toFixed(1)}</p>
               ${watched ?
     `<p class="film-details__user-rating">Your rate ${personalRating}</p>` : ``}
 
