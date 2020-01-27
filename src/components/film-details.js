@@ -12,7 +12,7 @@ const createRatingMarkup = (rating) => {
   }
   return rates.map((index) => {
     return `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${index}" id="rating-${index}" ${rating === index ? `checked` : ``}>
-    <label class="film-details__user-rating-label" for="rating-${index}">${index}</label>`
+    <label class="film-details__user-rating-label" for="rating-${index}">${index}</label>`;
   }).join(``);
 };
 
@@ -21,7 +21,6 @@ const createFilmPopupTemplate = ({
   alterTitle,
   description,
   rating,
-  personalRating,
   year,
   poster,
   runtime,
@@ -33,6 +32,7 @@ const createFilmPopupTemplate = ({
   country
 },
 {
+  personalRating,
   watchlist,
   watched,
   favorite
@@ -163,6 +163,7 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
     this._watched = film.watched;
     this._watchlist = film.watchlist;
     this._favorite = film.favorite;
+    this._score = film.personalRating;
 
     this._subscribeOnEvents();
   }
@@ -173,20 +174,28 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
 
   rerender() {
     super.rerender();
-
-    // this._applyFlatpickr();
   }
 
   getTemplate() {
     return createFilmPopupTemplate(this._film, {
       watchlist: this._watchlist,
       watched: this._watched,
-      favorite: this._favorite
+      favorite: this._favorite,
+      personalRating: this._score
     });
   }
 
   _subscribeOnEvents() {
     const element = this.getElement();
+    const scores = element.querySelectorAll(`input[name="score"]`);
+
+    if (scores) {
+      scores.forEach((score) => {
+        score.addEventListener(`click`, () => {
+          this._score = score.value;
+        });
+      });
+    }
 
     element.querySelector(`input[name="watchlist"]`)
     .addEventListener(`change`, () => {
