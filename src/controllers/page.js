@@ -63,17 +63,19 @@ export default class PageController {
           // errorHandler();
         });
     } else if (mode === `deleteComment`) {
-      console.log(movieController, oldData);
-      // movieController.render(newData);
-      // movieController._renderComments(oldData);
-
-      this._api.getComment(oldData.id)
-      .then((comments) => {
-        newData.commentsAmount = comments.length;
-        movieController.render(newData);
+      this._api.deleteComment(newData)
+      .then(() => {
+        movieController.render(oldData);
+      });
+    } else {
+      this._api.createComment(oldData.id, newData)
+      .then(() => {
+        movieController.render(oldData);
+      })
+      .catch(() => {
+        // errorHandler();
       });
     }
-
 
   }
 

@@ -3,7 +3,7 @@ import FilmPopupComponent from "../components/film-details";
 import CommentsComponent from "../components/comments";
 import {render, unrender, replace, remove, Position} from "../utils";
 import MovieModel from "../models/movie";
-// simport {moviesModel} from "../models/movies";
+// import {moviesModel} from "../models/movies";
 
 const Mode = {
   DEFAULT: `default`,
@@ -58,19 +58,32 @@ export default class MovieController {
         evt.preventDefault();
         if (evt.target.className === `film-details__comment-delete`) {
           const id = parseInt(evt.target.dataset.id, 10);
-
-          this._deleteCommitHandler(id);
-          // this._mode = Mode.DELETE;
           const newFilm = MovieModel.clone(film);
-          this._onDataChange(this, film, newFilm, Mode.DELETE);
+          newFilm.commentsAmount = comments.length - 1;
+          this._onDataChange(this, newFilm, id, Mode.DELETE);
+          this._renderComments(film);
+        }
+      });
+
+      this._commentsComponent.setSendCommentHandler((evt) => {
+        if (evt.keyCode === 13 && evt.ctrlKey) {
+          const commentText = this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).value;
+          const emoji = this._commentsComponent.getElement().querySelector(`input[name="comment-emoji"]:checked`).value;
+
+          const comment = {
+            'emotion': emoji,
+            'comment': commentText,
+            'date': new Date(),
+          };
+
+          const newFilm = MovieModel.clone(film);
+          newFilm.commentsAmount = comments.length + 1;
+
+          this._onDataChange(this, newFilm, comment, Mode.CREATE);
           this._renderComments(film);
         }
       });
     });
-  }
-
-  _deleteCommitHandler(id) {
-    this._api.deleteComment(id);
   }
 
   setDefaultView() {
@@ -189,7 +202,9 @@ export default class MovieController {
           this._renderComments(film);
         } else {
           document.addEventListener(`keydown`, this._onEscKeyDown);
+          render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
           render(this._container, this._filmPopupComponent.getElement(), Position.BEFOREEND);
+          this._renderComments(film);
         }
         break;
 
@@ -203,7 +218,7 @@ export default class MovieController {
           document.addEventListener(`keydown`, this._onEscKeyDown);
           render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
           render(this._container, this._filmPopupComponent.getElement(), Position.BEFOREEND);
-          // this._renderComments(film);
+          this._renderComments(film);
         }
 
         break;

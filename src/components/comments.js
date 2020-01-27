@@ -32,22 +32,22 @@ const createCommentsTemplate = (comments) => {
         </label>
 
         <div class="film-details__emoji-list">
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="sleeping">
+          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
           <label class="film-details__emoji-label" for="emoji-smile">
             <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
           </label>
 
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="neutral-face">
+          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
           <label class="film-details__emoji-label" for="emoji-sleeping">
             <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
           </label>
 
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-gpuke" value="grinning">
+          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-gpuke" value="puke">
           <label class="film-details__emoji-label" for="emoji-gpuke">
             <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
           </label>
 
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="grinning">
+          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
           <label class="film-details__emoji-label" for="emoji-angry">
             <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
           </label>
@@ -63,10 +63,16 @@ export default class CommentsComponent extends AbstractSmartComponent {
     super();
     this._comments = comments;
     this.setDeleteClickHandler();
+    this.setSendCommentHandler();
   }
 
   getTemplate() {
     return createCommentsTemplate(this._comments);
+  }
+
+  setSendCommentHandler(handler) {
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .addEventListener(`keydown`, handler);
   }
 
   setDeleteClickHandler(handler) {
