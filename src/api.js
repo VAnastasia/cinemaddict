@@ -34,9 +34,19 @@ export default class API {
      .then(CommentModel.parseComments);
   }
 
-  // createComment(comment) {
-  // }
-  //
+  deleteComment(id) {
+    return this._load({url: `comments/${id}`, method: Method.DELETE});
+  }
+
+  createComment(id, comment) {
+    return this._load({
+      url: `comments/${id}`,
+      method: Method.POST,
+      body: JSON.stringify(comment),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json());
+  }
 
   updateFilm(id, data) {
     return this._load({
@@ -49,9 +59,6 @@ export default class API {
       .then(MovieModel.parseFilm);
   }
 
-  // deleteCommeent(id) {
-  // }
-
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 
@@ -62,3 +69,10 @@ export default class API {
       });
   }
 }
+
+
+const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
+
+const api = new API(END_POINT, AUTHORIZATION);
+export {api};

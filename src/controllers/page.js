@@ -9,13 +9,13 @@ import FilmListComponent from "../components/film-list";
 import {render, Position} from "../utils";
 // import {filmsRated, filmsCommented} from "../data";
 import MovieController from "./movie";
-import API from "../api";
+import {api} from "../api";
 
 const HIDDEN_CLASS = `visually-hidden`;
 
 const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
   return movies.map((movie) => {
-    const movieController = new MovieController(listFilms, onDataChange, onViewChange);
+    const movieController = new MovieController(listFilms, onDataChange, onViewChange, api);
     movieController.render(movie);
 
     return movieController;
@@ -56,20 +56,19 @@ export default class PageController {
 
     this._api.updateFilm(oldData.id, newData)
       .then((movieModel) => {
-        newData.comments = movieModel.comments;
-        const isSuccess = this._moviesModel.updateFilm(oldData.id, movieModel);
+        const isSuccess = this._moviesModel.updateFilm(oldData.id, newData);
 
-        // if (isSuccess) {
-        //   movieController.render(newData);
-        // }
+        if (isSuccess) {
+          movieController.render(movieModel);
+        }
 
-        this._api.getComments(newData.id).then((commentsList) => {
-          newData.comments = movieModel.comments;
-          newData.commentsList = commentsList;
-          if (isSuccess) {
-            movieController.render(newData);
-          }
-        });
+        // this._api.getComments(newData.id)
+        // .then((commentsList) => {
+        //   newData.comments = movieModel.comments;
+        //   newData.commentsList = commentsList;
+        //   // if (isSuccess) {
+        //   // }
+        // });
 
         this._renderShowMoreButton();
         // this._filterController.updateData();

@@ -56,3 +56,6 @@ export default class MoviesModel {
     this._dataChangeHandlers.push(handler);
   }
 }
+
+const moviesModel = new MoviesModel();
+export {moviesModel};

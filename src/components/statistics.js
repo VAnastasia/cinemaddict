@@ -31,14 +31,6 @@ const FILTERS = {
 };
 
 const filtredFilms = (films) => {
-  console.log({
-    "all-time": films.slice(),
-    "today": films.slice().filter((film) => compareDatesToday(film.watchedDate)),
-    "week": getFilmsByDays(films.slice(), 7),
-    "month": getFilmsByDays(films.slice(), 30),
-    "year": getFilmsByDays(films.slice(), 365)
-  });
-
   return {
     "all-time": films.slice(),
     "today": films.slice().filter((film) => compareDatesToday(film.watchedDate)),
@@ -172,8 +164,6 @@ export default class StatisticsComponent extends AbstractSmartComponent {
   setOnFilterClickHandler() {
     this.getElement().querySelector(`.statistic__filters`)
       .addEventListener(`click`, (evt) => {
-        console.log(`change`);
-
         if (evt.target.tagName === `INPUT`) {
           if (this._activeFilter !== evt.target.value) {
             this._activeFilter = evt.target.value;
