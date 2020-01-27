@@ -1,6 +1,4 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import {unrender} from "../utils";
-import {formatRuntime} from "../utils";
 import moment from "moment";
 
 const createCommentsTemplate = (comments) => {
@@ -9,7 +7,7 @@ const createCommentsTemplate = (comments) => {
        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
       <ul class="film-details__comments-list">
-      ${comments.slice().sort((a, b) => b.date - a.date).map((it) => {
+      ${comments.slice().sort((a, b) => moment(b.date).diff(a.date)).map((it) => {
       return (`<li class="film-details__comment">
           <span class="film-details__comment-emoji">
             <img src="./images/emoji/${it.emotion}.png" width="55" height="55" alt="emoji">
@@ -19,7 +17,7 @@ const createCommentsTemplate = (comments) => {
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${it.author}</span>
               <span class="film-details__comment-day">${moment(it.date).format(`YYYY/MM/DD HH:MM`)}</span>
-              <button class="film-details__comment-delete">Delete</button>
+              <button class="film-details__comment-delete" data-id="${it.id}">Delete</button>
             </p>
           </div>
         </li>`);
@@ -64,9 +62,19 @@ export default class CommentsComponent extends AbstractSmartComponent {
   constructor(comments) {
     super();
     this._comments = comments;
+    this.setDeleteClickHandler();
   }
 
   getTemplate() {
     return createCommentsTemplate(this._comments);
+  }
+
+  setDeleteClickHandler(handler) {
+    const buttons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
+    if (buttons.length > 0) {
+      buttons.forEach((button) => {
+        button.addEventListener(`click`, handler);
+      });
+    }
   }
 }

@@ -43,41 +43,38 @@ export default class PageController {
     this._moviesModel.setFilterChangeHandler(this._onFilterChange);
   }
 
-  _onDataChange(movieController, oldData, newData) {
-    // const index = this._films.findIndex((it) => it === oldData);
-    //
-    // if (index === -1) {
-    //   return;
-    // }
-    //
-    // this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
-    //
-    // movieController.render(this._films[index]);
+  _onDataChange(movieController, oldData, newData, mode = `default`) {
 
-    this._api.updateFilm(oldData.id, newData)
-      .then((movieModel) => {
-        const isSuccess = this._moviesModel.updateFilm(oldData.id, newData);
+    if (mode === `default` || mode === `popup`) {
+      this._api.updateFilm(oldData.id, newData)
+        .then((movieModel) => {
+          const isSuccess = this._moviesModel.updateFilm(oldData.id, newData);
 
-        if (isSuccess) {
-          movieController.render(movieModel);
-        }
+          if (isSuccess) {
+            movieController.render(movieModel);
+          }
 
-        // this._api.getComments(newData.id)
-        // .then((commentsList) => {
-        //   newData.comments = movieModel.comments;
-        //   newData.commentsList = commentsList;
-        //   // if (isSuccess) {
-        //   // }
-        // });
+          this._renderShowMoreButton();
+          // this._filterController.updateData();
+          // this.updateStatsComponent();
+          // this.setFiltersHandler();
+          // this.setFilterStatisticClickHandler();
+        }).catch(() => {
+          // errorHandler();
+        });
+    } else if (mode === `deleteComment`) {
+      console.log(movieController, oldData);
+      // movieController.render(newData);
+      // movieController._renderComments(oldData);
 
-        this._renderShowMoreButton();
-        // this._filterController.updateData();
-        // this.updateStatsComponent();
-        // this.setFiltersHandler();
-        // this.setFilterStatisticClickHandler();
-      }).catch(() => {
-        // errorHandler();
+      this._api.getComment(oldData.id)
+      .then((comments) => {
+        newData.commentsAmount = comments.length;
+        movieController.render(newData);
       });
+    }
+
+
   }
 
   _onViewChange() {

@@ -204,22 +204,16 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
     element.querySelector(`input[name="watchlist"]`)
     .addEventListener(`change`, () => {
       this._watchlist = !this._watchlist;
-
-      // this.rerender();
     });
 
     element.querySelector(`input[name="watched"]`)
     .addEventListener(`change`, () => {
       this._watched = !this._watched;
-
-      // this.rerender();
     });
 
     element.querySelector(`input[name="favorite"]`)
     .addEventListener(`change`, () => {
       this._favorite = !this._favorite;
-
-      // this.rerender();
     });
 
     element.querySelector(`.film-details__close-btn`)

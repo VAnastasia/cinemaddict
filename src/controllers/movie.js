@@ -3,13 +3,13 @@ import FilmPopupComponent from "../components/film-details";
 import CommentsComponent from "../components/comments";
 import {render, unrender, replace, remove, Position} from "../utils";
 import MovieModel from "../models/movie";
-import {moviesModel} from "../models/movies";
-
-// import {api} from "../api";
+// simport {moviesModel} from "../models/movies";
 
 const Mode = {
   DEFAULT: `default`,
-  POPUP: `popup`
+  POPUP: `popup`,
+  DELETE: `deleteComment`,
+  CREATE: `createComment`
 };
 
 export default class MovieController {
@@ -46,7 +46,6 @@ export default class MovieController {
 
   _renderComments(film) {
     this._api.getComment(film.id)
-    // .then((comments) => moviesModel.setCommentsFilm(comments, film.id));
     .then((comments) => {
       if (this._commentsComponent) {
         this._commentsComponent.getElement().remove();
@@ -54,7 +53,24 @@ export default class MovieController {
 
       this._commentsComponent = new CommentsComponent(comments);
       render(this._filmPopupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), Position.BEFOREEND);
+
+      this._commentsComponent.setDeleteClickHandler((evt) => {
+        evt.preventDefault();
+        if (evt.target.className === `film-details__comment-delete`) {
+          const id = parseInt(evt.target.dataset.id, 10);
+
+          this._deleteCommitHandler(id);
+          // this._mode = Mode.DELETE;
+          const newFilm = MovieModel.clone(film);
+          this._onDataChange(this, film, newFilm, Mode.DELETE);
+          this._renderComments(film);
+        }
+      });
     });
+  }
+
+  _deleteCommitHandler(id) {
+    this._api.deleteComment(id);
   }
 
   setDefaultView() {
@@ -71,8 +87,6 @@ export default class MovieController {
   }
 
   render(film, mode = Mode.DEFAULT) {
-    // this._renderComments(film);
-
     const oldFilmComponent = this._filmComponent;
     const oldFilmPopupComponent = this._filmPopupComponent;
     this._mode = mode;
@@ -164,7 +178,6 @@ export default class MovieController {
           replace(this._filmPopupComponent, oldFilmPopupComponent);
         } else {
           render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
-
         }
         break;
       case Mode.POPUP:
@@ -173,11 +186,27 @@ export default class MovieController {
           // remove(oldFilmPopupComponent);
           replace(this._filmComponent, oldFilmComponent);
           replace(this._filmPopupComponent, oldFilmPopupComponent);
+          this._renderComments(film);
+        } else {
+          document.addEventListener(`keydown`, this._onEscKeyDown);
+          render(this._container, this._filmPopupComponent.getElement(), Position.BEFOREEND);
+        }
+        break;
+
+      case Mode.DELETE:
+        if (oldFilmPopupComponent && oldFilmComponent) {
+
+          replace(this._filmComponent, oldFilmComponent);
+          replace(this._filmPopupComponent, oldFilmPopupComponent);
+          this._renderComments(film);
+        } else {
+          document.addEventListener(`keydown`, this._onEscKeyDown);
+          render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
+          render(this._container, this._filmPopupComponent.getElement(), Position.BEFOREEND);
           // this._renderComments(film);
         }
 
-        document.addEventListener(`keydown`, this._onEscKeyDown);
-        render(this._container, this._taskFilmPopupComponent.getElement(), Position.BEFOREEND);
+        break;
     }
   }
 }
