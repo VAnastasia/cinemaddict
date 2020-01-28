@@ -1,5 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import moment from "moment";
+import he from "he";
 
 const createCommentsTemplate = (comments) => {
   return (
@@ -13,7 +14,7 @@ const createCommentsTemplate = (comments) => {
             <img src="./images/emoji/${it.emotion}.png" width="55" height="55" alt="emoji">
           </span>
           <div>
-            <p class="film-details__comment-text">${it.comment}</p>
+            <p class="film-details__comment-text">${he.encode(it.comment)}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${it.author}</span>
               <span class="film-details__comment-day">${moment(it.date).format(`YYYY/MM/DD HH:MM`)}</span>

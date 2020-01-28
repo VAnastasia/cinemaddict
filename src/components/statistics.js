@@ -74,7 +74,7 @@ const createStatisticsTemplate = (watchedFilmsAmount, totalDuration, topGenre, a
       </ul>
 
       <div class="statistic__chart-wrap">
-        <canvas class="statistic__chart" width="1000" height="400"></canvas>
+        <canvas class="statistic__chart" width="1000"></canvas>
       </div>
 
     </section>`
@@ -107,50 +107,62 @@ export default class StatisticsComponent extends AbstractSmartComponent {
   getTotalDuration() {
     const watchedFilms = filtredFilms(this._filmsWatched)[this._activeFilter];
 
-    const totalTime = watchedFilms
-      .map((film) => film.runtime)
-      .reduce((total, runtime) => total + runtime);
-    return `${Math.floor(totalTime / 60)}<span class="statistic__item-description">h</span> ${totalTime % 60}<span class="statistic__item-description">m</span>`;
+    if (watchedFilms.length > 0) {
+      const totalTime = watchedFilms
+        .map((film) => film.runtime)
+        .reduce((total, runtime) => total + runtime);
+      return `${Math.floor(totalTime / 60)}<span class="statistic__item-description">h</span> ${totalTime % 60}<span class="statistic__item-description">m</span>`;
+    }
+
+    return `0<span class="statistic__item-description">h</span> 0<span class="statistic__item-description">m</span>`;
   }
 
   getWatchedGenresAmount(filmsData) {
-    let genresSet = new Set([]);
-    const genresWatched = {};
 
-    filmsData.forEach((film) => {
-      film.genres.forEach((genre) => {
-        genresSet.add(genre);
-      });
-    });
+    if (filmsData.length > 0) {
+      let genresSet = new Set([]);
+      const genresWatched = {};
 
-    const genres = Array.from(genresSet);
-    genres.forEach((genre) => {
-      genresWatched[genre] = 0;
-    });
-
-    filmsData.forEach((film) => {
-      film.genres.forEach((genre) => {
-        genresWatched[genre] = genresWatched[genre] + 1;
+      filmsData.forEach((film) => {
+        film.genres.forEach((genre) => {
+          genresSet.add(genre);
+        });
       });
 
-    });
-
-    const genresStatistics = Object.keys(genresWatched)
-      .map((genre) => {
-        return {
-          name: genre,
-          amount: genresWatched[genre]
-        };
+      const genres = Array.from(genresSet);
+      genres.forEach((genre) => {
+        genresWatched[genre] = 0;
       });
 
-    return genresStatistics.sort((a, b) => b.amount - a.amount);
+      filmsData.forEach((film) => {
+        film.genres.forEach((genre) => {
+          genresWatched[genre] = genresWatched[genre] + 1;
+        });
+
+      });
+
+      const genresStatistics = Object.keys(genresWatched)
+        .map((genre) => {
+          return {
+            name: genre,
+            amount: genresWatched[genre]
+          };
+        });
+
+      return genresStatistics.sort((a, b) => b.amount - a.amount);
+    }
+
+    return [];
   }
 
   getTopGenre() {
     const watchedFilms = filtredFilms(this._filmsWatched)[this._activeFilter];
+    if (watchedFilms.length > 0) {
+      const genres = this.getWatchedGenresAmount(watchedFilms);
+      return genres[0].name;
+    }
 
-    const genres = this.getWatchedGenresAmount(watchedFilms);
-    return genres[0].name;
+    return `-`;
   }
 
   getTemplate() {
