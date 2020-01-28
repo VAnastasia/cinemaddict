@@ -31,14 +31,6 @@ const FILTERS = {
 };
 
 const filtredFilms = (films) => {
-  console.log({
-    "all-time": films.slice(),
-    "today": films.slice().filter((film) => compareDatesToday(film.watchedDate)),
-    "week": getFilmsByDays(films.slice(), 7),
-    "month": getFilmsByDays(films.slice(), 30),
-    "year": getFilmsByDays(films.slice(), 365)
-  });
-
   return {
     "all-time": films.slice(),
     "today": films.slice().filter((film) => compareDatesToday(film.watchedDate)),
@@ -95,8 +87,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     this._moviesModel = moviesModel;
     this._films = this._moviesModel.getFilmsAll();
     this._filmsWatched = this._films.filter((film) => film.watched);
-    // this._genres = new Set([]);
-    // this._genresWatched = {};
+
     this._activeFilter = `all-time`;
     this._chart = null;
     this._renderCharts();
@@ -172,13 +163,10 @@ export default class StatisticsComponent extends AbstractSmartComponent {
   setOnFilterClickHandler() {
     this.getElement().querySelector(`.statistic__filters`)
       .addEventListener(`click`, (evt) => {
-        console.log(`change`);
-
         if (evt.target.tagName === `INPUT`) {
           if (this._activeFilter !== evt.target.value) {
             this._activeFilter = evt.target.value;
             this.rerender();
-            this._renderCharts();
           }
         }
       });
@@ -186,26 +174,25 @@ export default class StatisticsComponent extends AbstractSmartComponent {
 
   setActiveFilter(activeFilter) {
     this._activeFilter = activeFilter;
-    // this.rerender();
   }
 
   show() {
     super.show();
+
     this.update(this._moviesModel.getFilmsAll());
+    this.rerender();
   }
+
 
   rerender() {
     super.rerender();
-
     this.setActiveFilter(this._activeFilter);
-
     this._renderCharts();
   }
 
   update(newFilmsData) {
     this._films = newFilmsData;
     this.rerender();
-    this._renderCharts();
   }
 
   _renderCharts() {
@@ -243,13 +230,8 @@ export default class StatisticsComponent extends AbstractSmartComponent {
               offset: 50,
               barThickness: 20,
               categoryPercentage: 1,
-
-              // color: `#ffffff`,
-              // font: {
-              //   size: 16
-              // },
               formatter: (value, context) =>
-                `${context.chart.data.labels[context.dataIndex]}             ${value}`
+                `${context.chart.data.labels[context.dataIndex]}          ${value}`
             }
           }
         ]
@@ -289,10 +271,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
           ],
           yAxes: [
             {
-              // barThickness: 20,
               display: false,
-              // barPercentage: 0.5,
-              // categoryPercentage: 1
             }
           ]
         }

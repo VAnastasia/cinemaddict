@@ -9,13 +9,6 @@ export default class CommentModel {
 
   static parseComment(data) {
     return new CommentModel(data);
-
-    // {
-    //   id: data[`id`],
-    //   author: data[`author`],
-    //   emotion: data[`emotion`],
-    //   date: data[`date`]
-    // };
   }
 
   static parseComments(data) {

@@ -1,16 +1,25 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import {unrender} from "../utils";
 import {formatRuntime} from "../utils";
 import moment from "moment";
+
+const createRatingMarkup = (rating) => {
+  const rates = [];
+  let i = 1;
+  while (i < 10) {
+    rates.push(i);
+    i++;
+  }
+  return rates.map((index) => {
+    return `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${index}" id="rating-${index}" ${rating === index ? `checked` : ``}>
+    <label class="film-details__user-rating-label" for="rating-${index}">${index}</label>`;
+  }).join(``);
+};
 
 const createFilmPopupTemplate = ({
   title,
   alterTitle,
   description,
   rating,
-  personalRating,
-  comments,
-  commentsAmount,
   year,
   poster,
   runtime,
@@ -19,9 +28,8 @@ const createFilmPopupTemplate = ({
   director,
   actors,
   writers,
-  country
-},
-{
+  country,
+  personalRating,
   watchlist,
   watched,
   favorite
@@ -129,33 +137,7 @@ const createFilmPopupTemplate = ({
               <p class="film-details__user-rating-feelings">How you feel it?</p>
 
               <div class="film-details__user-rating-score">
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="1" id="rating-1">
-                <label class="film-details__user-rating-label" for="rating-1">1</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="2" id="rating-2">
-                <label class="film-details__user-rating-label" for="rating-2">2</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="3" id="rating-3">
-                <label class="film-details__user-rating-label" for="rating-3">3</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="4" id="rating-4">
-                <label class="film-details__user-rating-label" for="rating-4">4</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="5" id="rating-5">
-                <label class="film-details__user-rating-label" for="rating-5">5</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="6" id="rating-6">
-                <label class="film-details__user-rating-label" for="rating-6">6</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="7" id="rating-7">
-                <label class="film-details__user-rating-label" for="rating-7">7</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="8" id="rating-8">
-                <label class="film-details__user-rating-label" for="rating-8">8</label>
-
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9" checked>
-                <label class="film-details__user-rating-label" for="rating-9">9</label>
-
+              ${createRatingMarkup(personalRating)}
               </div>
             </section>
           </div>
@@ -164,57 +146,7 @@ const createFilmPopupTemplate = ({
     : ``}
 
     <div class="form-details__bottom-container">
-      <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsAmount}</span></h3>
 
-        <ul class="film-details__comments-list">
-        ${comments.slice().sort((a, b) => b.date - a.date).map((it) => {
-    return (`<li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${it.emotion}.png" width="55" height="55" alt="emoji">
-            </span>
-            <div>
-              <p class="film-details__comment-text">${it.comment}</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${it.author}</span>
-                <span class="film-details__comment-day">${moment(it.date).format(`YYYY/MM/DD HH:MM`)}</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>`);
-  }).join(``)}
-        </ul>
-
-        <div class="film-details__new-comment">
-          <div for="add-emoji" class="film-details__add-emoji-label"></div>
-
-          <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-          </label>
-
-          <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="sleeping">
-            <label class="film-details__emoji-label" for="emoji-smile">
-              <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="neutral-face">
-            <label class="film-details__emoji-label" for="emoji-sleeping">
-              <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-gpuke" value="grinning">
-            <label class="film-details__emoji-label" for="emoji-gpuke">
-              <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="grinning">
-            <label class="film-details__emoji-label" for="emoji-angry">
-              <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-            </label>
-          </div>
-        </div>
-      </section>
     </div>
   </form>
 </section>`;
@@ -224,60 +156,16 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
-
-    this._watched = film.watched;
-    this._watchlist = film.watchlist;
-    this._favorite = film.favorite;
-
-    this._subscribeOnEvents();
   }
 
-  recoveryListeners() {
-    this._subscribeOnEvents();
-  }
+  recoveryListeners() {}
 
   rerender() {
     super.rerender();
-
-    // this._applyFlatpickr();
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._film, {
-      watchlist: this._watchlist,
-      watched: this._watched,
-      favorite: this._favorite
-    });
-  }
-
-  _subscribeOnEvents() {
-    const element = this.getElement();
-
-    element.querySelector(`input[name="watchlist"]`)
-    .addEventListener(`change`, () => {
-      this._watchlist = !this._watchlist;
-
-      this.rerender();
-    });
-
-    element.querySelector(`input[name="watched"]`)
-    .addEventListener(`change`, () => {
-      this._watched = !this._watched;
-
-      this.rerender();
-    });
-
-    element.querySelector(`input[name="favorite"]`)
-    .addEventListener(`change`, () => {
-      this._favorite = !this._favorite;
-
-      this.rerender();
-    });
-
-    element.querySelector(`.film-details__close-btn`)
-     .addEventListener(`click`, () => {
-       unrender(element);
-     });
+    return createFilmPopupTemplate(this._film);
   }
 
   setCloseClickHandler(handler) {
@@ -300,4 +188,17 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
     .addEventListener(`change`, handler);
   }
 
+  setUndoButtomClickHandler(handler) {
+    if (this.getElement().querySelector(`.film-details__watched-reset`)) {
+      this.getElement().querySelector(`.film-details__watched-reset`)
+        .addEventListener(`click`, handler);
+    }
+  }
+
+  setPersonalRating(handler) {
+    if (this.getElement().querySelector(`.film-details__user-rating-score`)) {
+      this.getElement().querySelector(`.film-details__user-rating-score`)
+        .addEventListener(`change`, (handler));
+    }
+  }
 }

@@ -1,4 +1,3 @@
-// import {groupedFilms} from "../data";
 import AbstractComponent from "./abstract-component";
 
 const createFilterMarkup = (filter, isChecked) => {

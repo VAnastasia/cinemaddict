@@ -7,15 +7,14 @@ import NoFilmsComponent from "../components/no-films";
 import SortComponent from "../components/sort";
 import FilmListComponent from "../components/film-list";
 import {render, Position} from "../utils";
-// import {filmsRated, filmsCommented} from "../data";
 import MovieController from "./movie";
-import API from "../api";
+import {api} from "../api";
 
 const HIDDEN_CLASS = `visually-hidden`;
 
 const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
   return movies.map((movie) => {
-    const movieController = new MovieController(listFilms, onDataChange, onViewChange);
+    const movieController = new MovieController(listFilms, onDataChange, onViewChange, api);
     movieController.render(movie);
 
     return movieController;
@@ -23,10 +22,10 @@ const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
 };
 
 export default class PageController {
-  constructor(container, moviesModel, api) {
+  constructor(container, moviesModel, apiParam) {
     this._container = container;
     this._moviesModel = moviesModel;
-    this._api = api;
+    this._api = apiParam;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -37,48 +36,46 @@ export default class PageController {
     this._noFilmsComponent = new NoFilmsComponent();
     this._sortComponent = new SortComponent();
     this._filmListComponent = new FilmListComponent();
+    this._statistics = null;
 
     this._showedMovieControllers = [];
     this._showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
     this._moviesModel.setFilterChangeHandler(this._onFilterChange);
   }
 
-  _onDataChange(movieController, oldData, newData) {
-    // const index = this._films.findIndex((it) => it === oldData);
-    //
-    // if (index === -1) {
-    //   return;
-    // }
-    //
-    // this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
-    //
-    // movieController.render(this._films[index]);
+  _onDataChange(movieController, oldData, newData, mode = `default`) {
 
-    this._api.updateFilm(oldData.id, newData)
-      .then((movieModel) => {
-        newData.comments = movieModel.comments;
-        const isSuccess = this._moviesModel.updateFilm(oldData.id, movieModel);
+    if (mode === `default` || mode === `popup`) {
+      this._api.updateFilm(oldData.id, newData)
+        .then((movieModel) => {
+          const isSuccess = this._moviesModel.updateFilm(oldData.id, newData);
 
-        // if (isSuccess) {
-        //   movieController.render(newData);
-        // }
-
-        this._api.getComments(newData.id).then((commentsList) => {
-          newData.comments = movieModel.comments;
-          newData.commentsList = commentsList;
           if (isSuccess) {
-            movieController.render(newData);
+            movieController.render(movieModel);
           }
-        });
 
-        this._renderShowMoreButton();
-        // this._filterController.updateData();
-        // this.updateStatsComponent();
-        // this.setFiltersHandler();
-        // this.setFilterStatisticClickHandler();
-      }).catch(() => {
-        // errorHandler();
+          this._renderShowMoreButton();
+
+        }).catch(() => {
+          movieController.shakeRating();
+        });
+    } else if (mode === `deleteComment`) {
+      this._api.deleteComment(newData)
+      .then(() => {
+        movieController.render(oldData);
       });
+    } else {
+      this._api.createComment(oldData.id, newData)
+      .then(() => {
+        movieController.render(oldData);
+      })
+      .catch(() => {
+        movieController.shakeComments();
+      });
+    }
+
+    this._removeExtraLists();
+    this._renderExtraLists();
   }
 
   _onViewChange() {
