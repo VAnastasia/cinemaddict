@@ -158,7 +158,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
 
   getTopGenre() {
     const watchedFilms = filtredFilms(this._filmsWatched)[this._activeFilter];
-    
+
     if (watchedFilms.length > 0) {
       const genres = this.getWatchedGenresAmount(watchedFilms);
       return genres[0].name;
