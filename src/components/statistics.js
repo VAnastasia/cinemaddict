@@ -161,7 +161,6 @@ export default class StatisticsComponent extends AbstractSmartComponent {
       const genres = this.getWatchedGenresAmount(watchedFilms);
       return genres[0].name;
     }
-
     return `-`;
   }
 
