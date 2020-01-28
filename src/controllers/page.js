@@ -7,7 +7,6 @@ import NoFilmsComponent from "../components/no-films";
 import SortComponent from "../components/sort";
 import FilmListComponent from "../components/film-list";
 import {render, Position} from "../utils";
-// import {filmsRated, filmsCommented} from "../data";
 import MovieController from "./movie";
 import {api} from "../api";
 
@@ -37,6 +36,7 @@ export default class PageController {
     this._noFilmsComponent = new NoFilmsComponent();
     this._sortComponent = new SortComponent();
     this._filmListComponent = new FilmListComponent();
+    this._statistics = null;
 
     this._showedMovieControllers = [];
     this._showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
@@ -55,10 +55,7 @@ export default class PageController {
           }
 
           this._renderShowMoreButton();
-          // this._filterController.updateData();
-          // this.updateStatsComponent();
-          // this.setFiltersHandler();
-          // this.setFilterStatisticClickHandler();
+
         }).catch(() => {
           movieController.shakeRating();
         });
@@ -77,6 +74,8 @@ export default class PageController {
       });
     }
 
+    this._removeExtraLists();
+    this._renderExtraLists();
   }
 
   _onViewChange() {

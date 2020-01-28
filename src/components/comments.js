@@ -71,7 +71,7 @@ export default class CommentsComponent extends AbstractSmartComponent {
   }
 
   setSendCommentHandler(handler) {
-    this.getElement().querySelector(`.film-details__comment-input`)
+    this.getElement().querySelector(`.film-details__new-comment`)
       .addEventListener(`keydown`, handler);
   }
 

@@ -1,5 +1,4 @@
 import AbstractSmartComponent from "./abstract-smart-component";
-import {unrender} from "../utils";
 import {formatRuntime} from "../utils";
 import moment from "moment";
 
