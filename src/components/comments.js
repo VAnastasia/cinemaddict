@@ -71,8 +71,10 @@ export default class CommentsComponent extends AbstractSmartComponent {
   }
 
   setSendCommentHandler(handler) {
-    this.getElement().querySelector(`.film-details__new-comment`)
-      .addEventListener(`keydown`, handler);
+    const newComment = this.getElement().querySelector(`.film-details__new-comment`);
+    if (newComment) {
+      newComment.addEventListener(`keydown`, handler);
+    }
   }
 
   setDeleteClickHandler(handler) {

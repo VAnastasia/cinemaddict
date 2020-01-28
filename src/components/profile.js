@@ -1,4 +1,3 @@
-// import {films} from "../data";
 import AbstractComponent from "./abstract-component";
 
 const Rating = {
