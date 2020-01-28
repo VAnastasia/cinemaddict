@@ -23,10 +23,10 @@ const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
 };
 
 export default class PageController {
-  constructor(container, moviesModel, api) {
+  constructor(container, moviesModel, apiParam) {
     this._container = container;
     this._moviesModel = moviesModel;
-    this._api = api;
+    this._api = apiParam;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -60,7 +60,7 @@ export default class PageController {
           // this.setFiltersHandler();
           // this.setFilterStatisticClickHandler();
         }).catch(() => {
-          // errorHandler();
+          movieController.shakeRating();
         });
     } else if (mode === `deleteComment`) {
       this._api.deleteComment(newData)
@@ -73,7 +73,7 @@ export default class PageController {
         movieController.render(oldData);
       })
       .catch(() => {
-        // errorHandler();
+        movieController.shakeComments();
       });
     }
 

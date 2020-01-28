@@ -157,12 +157,9 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
-    // this._subscribeOnEvents();
   }
 
-  recoveryListeners() {
-    // this._subscribeOnEvents();
-  }
+  recoveryListeners() {}
 
   rerender() {
     super.rerender();
@@ -171,8 +168,6 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
   getTemplate() {
     return createFilmPopupTemplate(this._film);
   }
-
-  _subscribeOnEvents() {}
 
   setCloseClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)

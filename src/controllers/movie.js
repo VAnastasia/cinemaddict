@@ -12,6 +12,8 @@ const Mode = {
   CREATE: `createComment`
 };
 
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export default class MovieController {
   constructor(container, onDataChange, onViewChange, api) {
     this._container = container;
@@ -97,6 +99,35 @@ export default class MovieController {
     remove(this._filmPopupComponent);
     remove(this._filmComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  shakeComments() {
+    this._commentsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).style.border = `1px solid red`;
+    this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).setAttribute(`disabled`, `true`);
+    setTimeout(() => {
+      this._commentsComponent.getElement().style.animation = ``;
+      this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).style.border = `none`;
+      this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).removeAttribute(`disabled`);
+
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  shakeRating() {
+    this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    const dots = this._filmPopupComponent.getElement().querySelectorAll(`.film-details__user-rating-label`);
+    dots.forEach((dot) => {
+      dot.style.background = `red`;
+    });
+    this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).setAttribute(`disabled`, `true`);
+    setTimeout(() => {
+      this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).style.animation = ``;
+      dots.forEach((dot) => {
+        dot.style.background = ``;
+      });
+      this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).removeAttribute(`disabled`);
+
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   render(film, mode = Mode.DEFAULT) {
@@ -207,44 +238,12 @@ export default class MovieController {
       this._renderComments(film);
     });
 
-    switch (mode) {
-      case Mode.DEFAULT:
-        if (oldFilmPopupComponent && oldFilmComponent) {
-          replace(this._filmComponent, oldFilmComponent);
-          replace(this._filmPopupComponent, oldFilmPopupComponent);
-        } else {
-          render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
-        }
-        break;
-      case Mode.POPUP:
-        if (oldFilmPopupComponent && oldFilmComponent) {
-          // remove(oldFilmComponent);
-          // remove(oldFilmPopupComponent);
-          replace(this._filmComponent, oldFilmComponent);
-          replace(this._filmPopupComponent, oldFilmPopupComponent);
-          this._renderComments(film);
-        } else {
-          document.addEventListener(`keydown`, this._onEscKeyDown);
-          render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
-          render(this._container, this._filmPopupComponent.getElement(), Position.BEFOREEND);
-          this._renderComments(film);
-        }
-        break;
-
-      case Mode.DELETE:
-        if (oldFilmPopupComponent && oldFilmComponent) {
-
-          replace(this._filmComponent, oldFilmComponent);
-          replace(this._filmPopupComponent, oldFilmPopupComponent);
-          this._renderComments(film);
-        } else {
-          document.addEventListener(`keydown`, this._onEscKeyDown);
-          render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
-          render(this._container, this._filmPopupComponent.getElement(), Position.BEFOREEND);
-          this._renderComments(film);
-        }
-
-        break;
+    if (oldFilmPopupComponent && oldFilmComponent) {
+      replace(this._filmComponent, oldFilmComponent);
+      replace(this._filmPopupComponent, oldFilmPopupComponent);
+      this._renderComments(film);
+    } else {
+      render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
     }
   }
 }
