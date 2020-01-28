@@ -125,10 +125,6 @@ export default class MovieController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._filmPopupComponent.setCloseClickHandler(() => {
-      unrender(this._filmPopupComponent.getElement());
-    });
-
     this._filmComponent.setWatchlistClickHandler((evt) => {
       evt.preventDefault();
       const newFilm = MovieModel.clone(film);
@@ -157,6 +153,24 @@ export default class MovieController {
 
     });
 
+    this._filmPopupComponent.setCloseClickHandler(() => {
+      unrender(this._filmPopupComponent.getElement());
+    });
+
+    this._filmPopupComponent.setUndoButtomClickHandler((evt) => {
+      evt.preventDefault();
+      const newFilm = MovieModel.clone(film);
+      newFilm.watched = !newFilm.watched;
+
+      if (!newFilm.watched) {
+        newFilm.personalRating = 0;
+      }
+      newFilm.watchedDate = newFilm.watchedDate ? new Date().toISOString() : null;
+
+      this._onDataChange(this, film, newFilm);
+      this._renderComments(film);
+    });
+
     this._filmPopupComponent.setWatchlistClickHandler(() => {
       const newFilm = MovieModel.clone(film);
       newFilm.watchlist = !newFilm.watchlist;
@@ -180,6 +194,15 @@ export default class MovieController {
     this._filmPopupComponent.setFavoriteClickHandler(() => {
       const newFilm = MovieModel.clone(film);
       newFilm.favorite = !newFilm.favorite;
+      this._onDataChange(this, film, newFilm);
+      this._renderComments(film);
+    });
+
+    this._filmPopupComponent.setPersonalRating((evt) => {
+      evt.preventDefault();
+      const rating = evt.target.value;
+      const newFilm = MovieModel.clone(film);
+      newFilm.personalRating = +rating;
       this._onDataChange(this, film, newFilm);
       this._renderComments(film);
     });

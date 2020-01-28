@@ -29,9 +29,7 @@ const createFilmPopupTemplate = ({
   director,
   actors,
   writers,
-  country
-},
-{
+  country,
   personalRating,
   watchlist,
   watched,
@@ -159,17 +157,11 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;
-
-    this._watched = film.watched;
-    this._watchlist = film.watchlist;
-    this._favorite = film.favorite;
-    this._score = film.personalRating;
-
-    this._subscribeOnEvents();
+    // this._subscribeOnEvents();
   }
 
   recoveryListeners() {
-    this._subscribeOnEvents();
+    // this._subscribeOnEvents();
   }
 
   rerender() {
@@ -177,46 +169,10 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._film, {
-      watchlist: this._watchlist,
-      watched: this._watched,
-      favorite: this._favorite,
-      personalRating: this._score
-    });
+    return createFilmPopupTemplate(this._film);
   }
 
-  _subscribeOnEvents() {
-    const element = this.getElement();
-    const scores = element.querySelectorAll(`input[name="score"]`);
-
-    if (scores) {
-      scores.forEach((score) => {
-        score.addEventListener(`click`, () => {
-          this._score = score.value;
-        });
-      });
-    }
-
-    element.querySelector(`input[name="watchlist"]`)
-    .addEventListener(`change`, () => {
-      this._watchlist = !this._watchlist;
-    });
-
-    element.querySelector(`input[name="watched"]`)
-    .addEventListener(`change`, () => {
-      this._watched = !this._watched;
-    });
-
-    element.querySelector(`input[name="favorite"]`)
-    .addEventListener(`change`, () => {
-      this._favorite = !this._favorite;
-    });
-
-    element.querySelector(`.film-details__close-btn`)
-     .addEventListener(`click`, () => {
-       unrender(element);
-     });
-  }
+  _subscribeOnEvents() {}
 
   setCloseClickHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)
@@ -238,4 +194,17 @@ export default class FilmPopupComponent extends AbstractSmartComponent {
     .addEventListener(`change`, handler);
   }
 
+  setUndoButtomClickHandler(handler) {
+    if (this.getElement().querySelector(`.film-details__watched-reset`)) {
+      this.getElement().querySelector(`.film-details__watched-reset`)
+        .addEventListener(`click`, handler);
+    }
+  }
+
+  setPersonalRating(handler) {
+    if (this.getElement().querySelector(`.film-details__user-rating-score`)) {
+      this.getElement().querySelector(`.film-details__user-rating-score`)
+        .addEventListener(`change`, (handler));
+    }
+  }
 }
