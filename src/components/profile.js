@@ -1,5 +1,5 @@
-import {films} from "../data";
-import {createElement} from "../utils";
+// import {films} from "../data";
+import AbstractComponent from "./abstract-component";
 
 const Rating = {
   NOVICE: `Novice`,
@@ -7,7 +7,7 @@ const Rating = {
   MOVIE_BUFF: `Movie Buff`
 };
 
-const defineUserRating = (filmsAmount) => {
+export const defineUserRating = (filmsAmount) => {
   let rating = ``;
   if (filmsAmount > 0 && filmsAmount <= 10) {
     rating = Rating.NOVICE;
@@ -23,33 +23,21 @@ const defineUserRating = (filmsAmount) => {
   return rating;
 };
 
-const createProfileTemplate = () => {
+const createProfileTemplate = (films) => {
+  const filmsWatchedAmount = films.filter((film) => film.watched).length;
   return `<section class="header__profile profile">
-    <p class="profile__rating">${defineUserRating(
-      films.filter((film) => film.watched).length
-  )}</p>
+    <p class="profile__rating">${defineUserRating(filmsWatchedAmount)}</p>
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
 };
 
-export default class ProfileComponent {
-  constructor() {
-    this._element = null;
+export default class ProfileComponent extends AbstractComponent {
+  constructor(films) {
+    super();
+    this._films = films;
   }
 
   getTemplate() {
-    return createProfileTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createProfileTemplate(this._films);
   }
 }
