@@ -1,5 +1,5 @@
 import FilmComponent from "../components/film";
-import FilmPopupComponent from "../components/film-details";
+import FilmPopupComponent from "../components/film-popup";
 import CommentsComponent from "../components/comments";
 import {render, unrender, replace, remove, Position} from "../utils";
 import MovieModel from "../models/movie";
