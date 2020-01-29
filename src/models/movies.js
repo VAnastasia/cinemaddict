@@ -9,10 +9,6 @@ export default class MoviesModel {
     this._filterChangeHandlers = [];
   }
 
-  _callHandlers(handlers) {
-    handlers.forEach((handler) => handler());
-  }
-
   getFilms() {
     return getFilmsByFilter(this._films, this._activeFilterType);
   }
@@ -54,6 +50,10 @@ export default class MoviesModel {
 
   setDataChangeHandler(handler) {
     this._dataChangeHandlers.push(handler);
+  }
+
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 }
 

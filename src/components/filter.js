@@ -5,11 +5,13 @@ const createFilterMarkup = (filter, isChecked) => {
 
   if (name === `all`) {
     return `<a href="#all" data-filter="${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}">All movies</a>`;
-  } else if (name === `stats`) {
-    return `<a href="#stats" data-filter="${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``} main-navigation__item--additional">Stats</a>`;
-  } else {
-    return `<a href="#${name}" data-filter="${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}">${name[0].toUpperCase()}${name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`;
   }
+
+  if (name === `stats`) {
+    return `<a href="#stats" data-filter="${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``} main-navigation__item--additional">Stats</a>`;
+  }
+
+  return `<a href="#${name}" data-filter="${name}" class="main-navigation__item ${isChecked ? `main-navigation__item--active` : ``}">${name[0].toUpperCase()}${name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`;
 };
 
 const createFilterTemplate = (filters) => {
@@ -38,6 +40,15 @@ export default class FilterComponent extends AbstractComponent {
     });
   }
 
+  setActiveItem(menuItem) {
+    this.clearActiveItem();
+    const item = this.getElement().querySelector(`#${menuItem}`);
+
+    if (item) {
+      item.classList.add(`main-navigation__item--active`);
+    }
+  }
+
   setShowStatisticHandler(handler) {
     this.getElement().addEventListener(`click`, handler);
   }
@@ -49,12 +60,4 @@ export default class FilterComponent extends AbstractComponent {
     });
   }
 
-  setActiveItem(menuItem) {
-    this.clearActiveItem();
-    const item = this.getElement().querySelector(`#${menuItem}`);
-
-    if (item) {
-      item.classList.add(`main-navigation__item--active`);
-    }
-  }
 }

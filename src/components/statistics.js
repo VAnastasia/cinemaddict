@@ -6,6 +6,19 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 
 import moment from "moment";
 
+const DAYS_WEEK = 7;
+const DAYS_MONTH = 30;
+const DAYS_YEAR = 365;
+const MINUTES_HOUR = 60;
+
+const FILTERS = {
+  "all-time": `All time`,
+  "today": `Today`,
+  "week": `Week`,
+  "month": `Month`,
+  "year": `Year`
+};
+
 const compareDates = (compareDate) => {
   const today = moment(Date.now());
   const date = moment(compareDate);
@@ -22,21 +35,13 @@ const getFilmsByDays = (films, days) => {
   return films.filter((film) => compareDates(film.watchedDate) <= days);
 };
 
-const FILTERS = {
-  "all-time": `All time`,
-  "today": `Today`,
-  "week": `Week`,
-  "month": `Month`,
-  "year": `Year`
-};
-
 const filtredFilms = (films) => {
   return {
     "all-time": films.slice(),
     "today": films.slice().filter((film) => compareDatesToday(film.watchedDate)),
-    "week": getFilmsByDays(films.slice(), 7),
-    "month": getFilmsByDays(films.slice(), 30),
-    "year": getFilmsByDays(films.slice(), 365)
+    "week": getFilmsByDays(films.slice(), DAYS_WEEK),
+    "month": getFilmsByDays(films.slice(), DAYS_MONTH),
+    "year": getFilmsByDays(films.slice(), DAYS_YEAR)
   };
 };
 
@@ -98,6 +103,17 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     this.setOnFilterClickHandler();
   }
 
+  rerender() {
+    super.rerender();
+    this.setActiveFilter(this._activeFilter);
+    this._renderCharts();
+  }
+
+  update(newFilmsData) {
+    this._films = newFilmsData;
+    this.rerender();
+  }
+
   getWatchedFilms() {
     const watchedFilms = filtredFilms(this._filmsWatched)[this._activeFilter];
 
@@ -108,22 +124,20 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     const watchedFilms = filtredFilms(this._filmsWatched)[this._activeFilter];
 
     if (watchedFilms.length > 0) {
-      const totalTime = watchedFilms
-        .map((film) => film.runtime)
-        .reduce((total, runtime) => total + runtime);
-      return `${Math.floor(totalTime / 60)}<span class="statistic__item-description">h</span> ${totalTime % 60}<span class="statistic__item-description">m</span>`;
+      const totalTime = watchedFilms.reduce((total, film) => total + film.runtime, 0);
+      return `${Math.floor(totalTime / MINUTES_HOUR)}<span class="statistic__item-description">h</span> ${totalTime % MINUTES_HOUR}<span class="statistic__item-description">m</span>`;
     }
 
     return `0<span class="statistic__item-description">h</span> 0<span class="statistic__item-description">m</span>`;
   }
 
-  getWatchedGenresAmount(filmsData) {
+  getWatchedGenresAmount(films) {
 
-    if (filmsData.length > 0) {
+    if (films.length > 0) {
       const genresSet = new Set([]);
       const genresWatched = {};
 
-      filmsData.forEach((film) => {
+      films.forEach((film) => {
         film.genres.forEach((genre) => {
           genresSet.add(genre);
         });
@@ -134,7 +148,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
         genresWatched[genre] = 0;
       });
 
-      filmsData.forEach((film) => {
+      films.forEach((film) => {
         film.genres.forEach((genre) => {
           genresWatched[genre] = genresWatched[genre] + 1;
         });
@@ -193,18 +207,6 @@ export default class StatisticsComponent extends AbstractSmartComponent {
     super.show();
 
     this.update(this._moviesModel.getFilmsAll());
-    this.rerender();
-  }
-
-
-  rerender() {
-    super.rerender();
-    this.setActiveFilter(this._activeFilter);
-    this._renderCharts();
-  }
-
-  update(newFilmsData) {
-    this._films = newFilmsData;
     this.rerender();
   }
 

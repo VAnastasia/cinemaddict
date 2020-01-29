@@ -29,107 +29,6 @@ export default class MovieController {
     this._commentsComponent = null;
   }
 
-  _onEscKeyDown(evt) {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      this._mode = Mode.DEFAULT;
-      this._siteMainElement.removeChild(this._filmPopupComponent.getElement());
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
-    }
-  }
-
-  _showPopup() {
-    this._onViewChange();
-    this._mode = Mode.POPUP;
-    render(this._siteMainElement, this._filmPopupComponent.getElement(), Position.BEFOREEND);
-  }
-
-  _renderComments(film) {
-    this._api.getComment(film.id)
-    .then((comments) => {
-      if (this._commentsComponent) {
-        this._commentsComponent.getElement().remove();
-      }
-
-      this._commentsComponent = new CommentsComponent(comments);
-      render(this._filmPopupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), Position.BEFOREEND);
-
-      this._commentsComponent.setDeleteClickHandler((evt) => {
-        evt.preventDefault();
-        if (evt.target.className === `film-details__comment-delete`) {
-          const id = parseInt(evt.target.dataset.id, 10);
-          const newFilm = MovieModel.clone(film);
-          newFilm.commentsAmount = comments.length - 1;
-          this._onDataChange(this, newFilm, id, Mode.DELETE);
-          this._renderComments(film);
-        }
-      });
-
-      this._commentsComponent.setSendCommentHandler((evt) => {
-        if (evt.keyCode === 13 && evt.ctrlKey) {
-          const commentText = this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).value;
-          const emojiChecked = this._commentsComponent.getElement().querySelector(`input[name="comment-emoji"]:checked`);
-          const emoji = emojiChecked ? emojiChecked.value : `smile`;
-
-          const comment = {
-            'emotion': emoji,
-            'comment': commentText,
-            'date': new Date(),
-          };
-
-          const newFilm = MovieModel.clone(film);
-          newFilm.commentsAmount = comments.length + 1;
-
-          this._onDataChange(this, newFilm, comment, Mode.CREATE);
-          this._renderComments(film);
-        }
-      });
-    });
-  }
-
-  setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
-      unrender(this._filmPopupComponent.getElement());
-      this._mode = Mode.DEFAULT;
-    }
-  }
-
-  destroy() {
-    remove(this._filmPopupComponent);
-    remove(this._filmComponent);
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-  }
-
-  shakeComments() {
-    this._commentsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).style.border = `1px solid red`;
-    this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).setAttribute(`disabled`, `true`);
-    setTimeout(() => {
-      this._commentsComponent.getElement().style.animation = ``;
-      this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).style.border = `none`;
-      this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).removeAttribute(`disabled`);
-
-    }, SHAKE_ANIMATION_TIMEOUT);
-  }
-
-  shakeRating() {
-    this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
-    const dots = this._filmPopupComponent.getElement().querySelectorAll(`.film-details__user-rating-label`);
-    dots.forEach((dot) => {
-      dot.style.background = `red`;
-    });
-    this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).setAttribute(`disabled`, `true`);
-    setTimeout(() => {
-      this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).style.animation = ``;
-      dots.forEach((dot) => {
-        dot.style.background = ``;
-      });
-      this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).removeAttribute(`disabled`);
-
-    }, SHAKE_ANIMATION_TIMEOUT);
-  }
-
   render(film, mode = Mode.DEFAULT) {
     const oldFilmComponent = this._filmComponent;
     const oldFilmPopupComponent = this._filmPopupComponent;
@@ -245,5 +144,106 @@ export default class MovieController {
     } else {
       render(this._container, this._filmComponent.getElement(), Position.BEFOREEND);
     }
+  }
+
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      unrender(this._filmPopupComponent.getElement());
+      this._mode = Mode.DEFAULT;
+    }
+  }
+
+  destroy() {
+    remove(this._filmPopupComponent);
+    remove(this._filmComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  shakeComments() {
+    this._commentsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).style.border = `1px solid red`;
+    this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).setAttribute(`disabled`, `true`);
+    setTimeout(() => {
+      this._commentsComponent.getElement().style.animation = ``;
+      this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).style.border = `none`;
+      this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).removeAttribute(`disabled`);
+
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  shakeRating() {
+    this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    const dots = this._filmPopupComponent.getElement().querySelectorAll(`.film-details__user-rating-label`);
+    dots.forEach((dot) => {
+      dot.style.background = `red`;
+    });
+    this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).setAttribute(`disabled`, `true`);
+    setTimeout(() => {
+      this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).style.animation = ``;
+      dots.forEach((dot) => {
+        dot.style.background = ``;
+      });
+      this._filmPopupComponent.getElement().querySelector(`.film-details__inner`).removeAttribute(`disabled`);
+
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  _onEscKeyDown(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      this._mode = Mode.DEFAULT;
+      this._siteMainElement.removeChild(this._filmPopupComponent.getElement());
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+    }
+  }
+
+  _showPopup() {
+    this._onViewChange();
+    this._mode = Mode.POPUP;
+    render(this._siteMainElement, this._filmPopupComponent.getElement(), Position.BEFOREEND);
+  }
+
+  _renderComments(film) {
+    this._api.getComment(film.id)
+    .then((comments) => {
+      if (this._commentsComponent) {
+        this._commentsComponent.getElement().remove();
+      }
+
+      this._commentsComponent = new CommentsComponent(comments);
+      render(this._filmPopupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), Position.BEFOREEND);
+
+      this._commentsComponent.setDeleteClickHandler((evt) => {
+        evt.preventDefault();
+        if (evt.target.className === `film-details__comment-delete`) {
+          const id = parseInt(evt.target.dataset.id, 10);
+          const newFilm = MovieModel.clone(film);
+          newFilm.commentsAmount = comments.length - 1;
+          this._onDataChange(this, newFilm, id, Mode.DELETE);
+          this._renderComments(film);
+        }
+      });
+
+      this._commentsComponent.setSendCommentHandler((evt) => {
+        if (evt.keyCode === 13 && evt.ctrlKey) {
+          const commentText = this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).value;
+          const emojiChecked = this._commentsComponent.getElement().querySelector(`input[name="comment-emoji"]:checked`);
+          const emoji = emojiChecked ? emojiChecked.value : `smile`;
+
+          const comment = {
+            'emotion': emoji,
+            'comment': commentText,
+            'date': new Date(),
+          };
+
+          const newFilm = MovieModel.clone(film);
+          newFilm.commentsAmount = comments.length + 1;
+
+          this._onDataChange(this, newFilm, comment, Mode.CREATE);
+          this._renderComments(film);
+        }
+      });
+    });
   }
 }

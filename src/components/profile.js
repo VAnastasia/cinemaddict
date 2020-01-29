@@ -1,5 +1,8 @@
 import AbstractComponent from "./abstract-component";
 
+const MIDDLE_AMOUNT_FILMS = 10;
+const HIGH_AMOUNT_FILMS = 20;
+
 const Rating = {
   NOVICE: `Novice`,
   FUN: `Fun`,
@@ -8,15 +11,15 @@ const Rating = {
 
 export const defineUserRating = (filmsAmount) => {
   let rating = ``;
-  if (filmsAmount > 0 && filmsAmount <= 10) {
+  if (filmsAmount > 0 && filmsAmount <= MIDDLE_AMOUNT_FILMS) {
     rating = Rating.NOVICE;
   }
 
-  if (filmsAmount > 10 && filmsAmount <= 20) {
+  if (filmsAmount > 10 && filmsAmount <= HIGH_AMOUNT_FILMS) {
     rating = Rating.FUN;
   }
 
-  if (filmsAmount > 20) {
+  if (filmsAmount > HIGH_AMOUNT_FILMS) {
     rating = Rating.MOVIE_BUFF;
   }
   return rating;

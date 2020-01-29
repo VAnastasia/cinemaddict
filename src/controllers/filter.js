@@ -41,16 +41,6 @@ export default class FilterController {
     this._moviesModel.setDataChangeHandler(this._onDataChange);
   }
 
-  _onDataChange() {
-    this.render();
-  }
-
-  _onFilterChange(filterType) {
-    this._moviesModel.setFilter(filterType);
-    this._activeFilterType = filterType;
-    this.render();
-  }
-
   render() {
     const container = this._container;
     const allFilms = this._moviesModel.getFilmsAll();
@@ -73,4 +63,15 @@ export default class FilterController {
       render(container, this._filterComponent.getElement(), Position.BEFOREEND);
     }
   }
+
+  _onDataChange() {
+    this.render();
+  }
+
+  _onFilterChange(filterType) {
+    this._moviesModel.setFilter(filterType);
+    this._activeFilterType = filterType;
+    this.render();
+  }
+
 }

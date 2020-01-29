@@ -1,6 +1,9 @@
 import MovieModel from "./models/movie";
 import CommentModel from "./models/comment";
 
+const STATUS_OK = 200;
+const STATUS_ERROR = 300;
+
 const Method = {
   GET: `GET`,
   POST: `POST`,
@@ -9,7 +12,7 @@ const Method = {
 };
 
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= STATUS_OK && response.status < STATUS_ERROR) {
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);
@@ -48,11 +51,11 @@ export default class API {
       .then((response) => response.json());
   }
 
-  updateFilm(id, data) {
+  updateFilm(id, film) {
     return this._load({
       url: `movies/${id}`,
       method: Method.PUT,
-      body: JSON.stringify(data.toRAW()),
+      body: JSON.stringify(film.toRAW()),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
