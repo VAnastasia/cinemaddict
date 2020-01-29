@@ -1,6 +1,3 @@
-const SHOWING_FILMS_COUNT_ON_START = 5;
-const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
-
 import ShowMoreComponent from "../components/show-more";
 import FilmExtraListComponent from "../components/film-extra-list";
 import NoFilmsComponent from "../components/no-films";
@@ -10,6 +7,8 @@ import {render, Position} from "../utils";
 import MovieController from "./movie";
 import {api} from "../api";
 
+const SHOWING_FILMS_COUNT_ON_START = 5;
+const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
 const HIDDEN_CLASS = `visually-hidden`;
 
 const renderFilms = (movies, listFilms, onDataChange, onViewChange) => {
@@ -79,7 +78,7 @@ export default class PageController {
   }
 
   _onViewChange() {
-    this._showedMovieControllers.forEach((it) => it.setDefaultView());
+    this._showedMovieControllers.forEach((controller) => controller.setDefaultView());
   }
 
   _removeFilms() {
@@ -99,10 +98,10 @@ export default class PageController {
     });
   }
 
-  _renderFilms(filmsArray) {
+  _renderFilms(films) {
     const filmListContainer = document.querySelector(`.films-list__container`);
 
-    const newFilms = renderFilms(filmsArray.slice(0, this._showingFilmsCount), filmListContainer, this._onDataChange, this._onViewChange);
+    const newFilms = renderFilms(films.slice(0, this._showingFilmsCount), filmListContainer, this._onDataChange, this._onViewChange);
 
     this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
     this._renderShowMoreButton();

@@ -8,17 +8,17 @@ const createCommentsTemplate = (comments) => {
        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
       <ul class="film-details__comments-list">
-      ${comments.slice().sort((a, b) => moment(b.date).diff(a.date)).map((it) => {
+      ${comments.slice().sort((a, b) => moment(b.date).diff(a.date)).map(({emotion, comment, author, date, id}) => {
       return (`<li class="film-details__comment">
           <span class="film-details__comment-emoji">
-            <img src="./images/emoji/${it.emotion}.png" width="55" height="55" alt="emoji">
+            <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji">
           </span>
           <div>
-            <p class="film-details__comment-text">${he.encode(it.comment)}</p>
+            <p class="film-details__comment-text">${he.encode(comment)}</p>
             <p class="film-details__comment-info">
-              <span class="film-details__comment-author">${it.author}</span>
-              <span class="film-details__comment-day">${moment(it.date).format(`YYYY/MM/DD HH:MM`)}</span>
-              <button class="film-details__comment-delete" data-id="${it.id}">Delete</button>
+              <span class="film-details__comment-author">${author}</span>
+              <span class="film-details__comment-day">${moment(date).format(`YYYY/MM/DD HH:MM`)}</span>
+              <button class="film-details__comment-delete" data-id="${id}">Delete</button>
             </p>
           </div>
         </li>`);

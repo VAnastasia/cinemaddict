@@ -120,7 +120,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
   getWatchedGenresAmount(filmsData) {
 
     if (filmsData.length > 0) {
-      let genresSet = new Set([]);
+      const genresSet = new Set([]);
       const genresWatched = {};
 
       filmsData.forEach((film) => {

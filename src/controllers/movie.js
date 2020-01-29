@@ -3,7 +3,6 @@ import FilmPopupComponent from "../components/film-details";
 import CommentsComponent from "../components/comments";
 import {render, unrender, replace, remove, Position} from "../utils";
 import MovieModel from "../models/movie";
-// import {moviesModel} from "../models/movies";
 
 const Mode = {
   DEFAULT: `default`,
@@ -70,7 +69,8 @@ export default class MovieController {
       this._commentsComponent.setSendCommentHandler((evt) => {
         if (evt.keyCode === 13 && evt.ctrlKey) {
           const commentText = this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).value;
-          const emoji = this._commentsComponent.getElement().querySelector(`input[name="comment-emoji"]:checked`).value;
+          const emojiChecked = this._commentsComponent.getElement().querySelector(`input[name="comment-emoji"]:checked`);
+          const emoji = emojiChecked ? emojiChecked.value : `smile`;
 
           const comment = {
             'emotion': emoji,
