@@ -31,6 +31,8 @@ api.getFilms()
     moviesModel.setFilms(filmsAll);
     render(siteHeaderElement, new ProfileComponent(filmsAll).getElement(), Position.BEFOREEND);
     const statisticsComponent = new StatisticsComponent(moviesModel);
+    siteMainElement.innerHTML = ``;
+
     const filterController = new FilterController(siteMainElement, moviesModel, showStatisticsHandler(pageController, statisticsComponent), statisticsComponent);
     filterController.render();
     render(siteFooterElement, new FooterStatisticComponent(filmsAll.length).getElement(), Position.BEFOREEND);

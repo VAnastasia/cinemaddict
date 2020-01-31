@@ -209,6 +209,10 @@ button {
   margin-left: 15px;
 }
 
+.main {
+  min-height: calc(100vh - 280px);
+}
+
 .main-navigation {
   border-bottom: solid 2px var(--outline-color);
   display: flex;
