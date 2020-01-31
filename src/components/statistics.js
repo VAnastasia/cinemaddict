@@ -87,12 +87,11 @@ const createStatisticsTemplate = (watchedFilmsAmount, totalDuration, topGenre, a
 };
 
 export default class StatisticsComponent extends AbstractSmartComponent {
-  constructor(moviesModel, api) {
+  constructor(moviesModel) {
     super();
     this._moviesModel = moviesModel;
     this._films = this._moviesModel.getFilmsAll();
     this._filmsWatched = this._films.filter((film) => film.watched);
-    this._api = api;
 
     this._activeFilter = `all-time`;
     this._chart = null;
@@ -112,7 +111,7 @@ export default class StatisticsComponent extends AbstractSmartComponent {
 
   update(newFilmsData) {
     this._films = newFilmsData;
-    this.rerender();
+    // this.rerender();
   }
 
   getWatchedFilms() {
@@ -206,16 +205,8 @@ export default class StatisticsComponent extends AbstractSmartComponent {
 
   show() {
     super.show();
-
-    // this._api.getFilms().then((films) => {
-    //   this.update(films);
-    //   this.rerender();
-
-    // });
-
     this.update(this._films);
     this.rerender();
-
   }
 
   _renderCharts() {

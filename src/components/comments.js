@@ -2,7 +2,7 @@ import AbstractSmartComponent from "./abstract-smart-component";
 import moment from "moment";
 import he from "he";
 
-const createCommentsTemplate = (comments) => {
+const createCommentsTemplate = (comments, isDeleting) => {
   return (
     `<section class="film-details__comments-wrap">
        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
@@ -17,8 +17,8 @@ const createCommentsTemplate = (comments) => {
             <p class="film-details__comment-text">${he.encode(comment)}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${author}</span>
-              <span class="film-details__comment-day">${moment(date).format(`YYYY/MM/DD HH:MM`)}</span>
-              <button class="film-details__comment-delete" data-id="${id}">Delete</button>
+              <span class="film-details__comment-day">${moment(date).fromNow()}</span>
+              <button class="film-details__comment-delete" data-id="${id}" ${isDeleting ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
             </p>
           </div>
         </li>`);
@@ -63,12 +63,21 @@ export default class CommentsComponent extends AbstractSmartComponent {
   constructor(comments) {
     super();
     this._comments = comments;
+    this._isDeleting = false;
     this.setDeleteClickHandler();
     this.setSendCommentHandler();
   }
 
+  setDeleting() {
+    this._isDeleting = true;
+  }
+
+  setDeleted() {
+    this._isDeleting = false;
+  }
+
   getTemplate() {
-    return createCommentsTemplate(this._comments);
+    return createCommentsTemplate(this._comments, this._isDeleting);
   }
 
   setSendCommentHandler(handler) {
