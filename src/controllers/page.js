@@ -135,28 +135,35 @@ export default class PageController {
 
   _renderExtraLists() {
     const filmsContainer = document.querySelector(`.films`);
-    const filmsRated = this._films
+    this._api.getFilms().then((films) => {
+      const filmsRated = films
       .slice()
       .sort((a, b) => b.rating - a.rating)
       .slice(0, 2);
 
-    const filmsCommented = this._films
-      .slice()
-      .sort((a, b) => b.commentsAmount - a.commentsAmount)
-      .slice(0, 2);
+      const filmsCommented = films
+        .slice()
+        .sort((a, b) => b.commentsAmount - a.commentsAmount)
+        .slice(0, 2);
 
-    render(filmsContainer, new FilmExtraListComponent(`Top rated`).getElement(), Position.BEFOREEND);
-    render(filmsContainer, new FilmExtraListComponent(`Most commented`).getElement(), Position.BEFOREEND);
+      render(filmsContainer, new FilmExtraListComponent(`Top rated`).getElement(), Position.BEFOREEND);
+      render(filmsContainer, new FilmExtraListComponent(`Most commented`).getElement(), Position.BEFOREEND);
 
-    const filmsExtraElements = document.querySelectorAll(
-        `.films-list--extra .films-list__container`
-    );
+      const filmsExtraElements = document.querySelectorAll(
+          `.films-list--extra .films-list__container`
+      );
 
-    const rateFilms = renderFilms(filmsRated, filmsExtraElements[0], this._onDataChange, this._onViewChange);
-    this._showedMovieControllers = this._showedMovieControllers.concat(rateFilms);
+      const rateFilms = renderFilms(filmsRated, filmsExtraElements[0], this._onDataChange, this._onViewChange);
+      this._showedMovieControllers = this._showedMovieControllers.concat(rateFilms);
 
-    const commentFilms = renderFilms(filmsCommented, filmsExtraElements[1], this._onDataChange, this._onViewChange);
-    this._showedMovieControllers = this._showedMovieControllers.concat(commentFilms);
+      const commentFilms = renderFilms(filmsCommented, filmsExtraElements[1], this._onDataChange, this._onViewChange);
+      this._showedMovieControllers = this._showedMovieControllers.concat(commentFilms);
+    });
+  }
+
+  _rerenderExtraLists() {
+    this._removeExtraLists();
+    this._renderExtraLists();
   }
 
   _renderShowMoreButton() {
@@ -205,6 +212,7 @@ export default class PageController {
 
           if (isSuccess) {
             movieController.render(movieModel);
+            this._rerenderExtraLists();
           }
 
           this._renderShowMoreButton();
@@ -216,19 +224,18 @@ export default class PageController {
       this._api.deleteComment(newData)
       .then(() => {
         movieController.render(oldData);
+        this._rerenderExtraLists();
       });
     } else {
       this._api.createComment(oldData.id, newData)
       .then(() => {
         movieController.render(oldData);
+        this._rerenderExtraLists();
       })
       .catch(() => {
         movieController.shakeComments();
       });
     }
-
-    this._removeExtraLists();
-    this._renderExtraLists();
   }
 
   _onViewChange() {
