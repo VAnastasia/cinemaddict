@@ -4,6 +4,7 @@ import Comments from "../components/comments";
 import {render, unrender, replace, remove, Position} from "../utils";
 import MovieModel from "../models/movie";
 
+
 const Mode = {
   DEFAULT: `default`,
   POPUP: `popup`,
@@ -55,8 +56,8 @@ export default class MovieController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
-    this._filmComponent.setWatchlistClickHandler((evt) => {
-      evt.preventDefault();
+    this._filmComponent.setWatchlistClickHandler(() => {
+      // evt.preventDefault();
       const newFilm = MovieModel.clone(film);
       newFilm.watchlist = !newFilm.watchlist;
       this._onDataChange(this, film, newFilm);
@@ -80,7 +81,6 @@ export default class MovieController {
       const newFilm = MovieModel.clone(film);
       newFilm.favorite = !newFilm.favorite;
       this._onDataChange(this, film, newFilm);
-
     });
 
     this._filmPopupComponent.setCloseClickHandler(() => {

@@ -1,6 +1,9 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {formatRuntime} from "../utils";
 import moment from "moment";
+import debounce from 'lodash/debounce';
+
+const DEBOUNCE_TIMEOUT = 500;
 
 const createRatingMarkup = (rating) => {
   const rates = [];
@@ -175,17 +178,17 @@ export default class FilmPopup extends AbstractSmartComponent {
 
   setWatchlistClickHandler(handler) {
     this.getElement().querySelector(`input[name="watchlist"]`)
-    .addEventListener(`change`, handler);
+    .addEventListener(`change`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 
   setWatchedClickHandler(handler) {
     this.getElement().querySelector(`input[name="watched"]`)
-    .addEventListener(`change`, handler);
+    .addEventListener(`change`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 
   setFavoriteClickHandler(handler) {
     this.getElement().querySelector(`input[name="favorite"]`)
-    .addEventListener(`change`, handler);
+    .addEventListener(`change`, debounce(handler, DEBOUNCE_TIMEOUT));
   }
 
   setUndoButtomClickHandler(handler) {
