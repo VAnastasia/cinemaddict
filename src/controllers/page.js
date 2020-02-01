@@ -1,8 +1,8 @@
-import ShowMoreComponent from "../components/show-more";
-import FilmExtraListComponent from "../components/film-extra-list";
-import NoFilmsComponent from "../components/no-films";
-import SortComponent from "../components/sort";
-import FilmListComponent from "../components/film-list";
+import ShowMore from "../components/show-more";
+import FilmExtraList from "../components/film-extra-list";
+import NoFilms from "../components/no-films";
+import Sort from "../components/sort";
+import FilmList from "../components/film-list";
 import {render, Position} from "../utils";
 import MovieController from "./movie";
 import {api} from "../api";
@@ -31,11 +31,10 @@ export default class PageController {
     this._onFilterChange = this._onFilterChange.bind(this);
 
     this._films = [];
-    this._showMoreComponent = new ShowMoreComponent();
-    this._noFilmsComponent = new NoFilmsComponent();
-    this._sortComponent = new SortComponent();
-    this._filmListComponent = new FilmListComponent();
-    this._statistics = null;
+    this._showMoreComponent = new ShowMore();
+    this._noFilmsComponent = new NoFilms();
+    this._sortComponent = new Sort();
+    this._filmListComponent = new FilmList();
 
     this._showedMovieControllers = [];
     this._showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
@@ -146,8 +145,8 @@ export default class PageController {
         .sort((a, b) => b.commentsAmount - a.commentsAmount)
         .slice(0, 2);
 
-      render(filmsContainer, new FilmExtraListComponent(`Top rated`).getElement(), Position.BEFOREEND);
-      render(filmsContainer, new FilmExtraListComponent(`Most commented`).getElement(), Position.BEFOREEND);
+      render(filmsContainer, new FilmExtraList(`Top rated`).getElement(), Position.BEFOREEND);
+      render(filmsContainer, new FilmExtraList(`Most commented`).getElement(), Position.BEFOREEND);
 
       const filmsExtraElements = document.querySelectorAll(
           `.films-list--extra .films-list__container`

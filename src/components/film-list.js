@@ -9,7 +9,7 @@ const createFilmList = () => {
     </section>`;
 };
 
-export default class FilmListComponent extends AbstractComponent {
+export default class FilmList extends AbstractComponent {
   getTemplate() {
     return createFilmList();
   }

@@ -152,7 +152,7 @@ const createFilmPopupTemplate = ({
 </section>`;
 };
 
-export default class FilmPopupComponent extends AbstractSmartComponent {
+export default class FilmPopup extends AbstractSmartComponent {
   constructor(film) {
     super();
     this._film = film;

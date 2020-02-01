@@ -36,7 +36,7 @@ const createFilmTemplate = ({
         </article>`;
 };
 
-export default class FilmComponent extends AbstractComponent {
+export default class Film extends AbstractComponent {
   constructor(film) {
     super();
     this._film = film;

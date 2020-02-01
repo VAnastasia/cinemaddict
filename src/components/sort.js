@@ -8,7 +8,7 @@ const createSortTemplate = () => {
   </ul>`;
 };
 
-export default class SortComponent extends AbstractComponent {
+export default class Sort extends AbstractComponent {
   getTemplate() {
     return createSortTemplate();
   }

@@ -22,7 +22,7 @@ const createFilterTemplate = (filters) => {
   </nav>`;
 };
 
-export default class FilterComponent extends AbstractComponent {
+export default class Filter extends AbstractComponent {
   constructor(filters) {
     super();
     this._filters = filters;

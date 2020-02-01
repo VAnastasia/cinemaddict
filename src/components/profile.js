@@ -33,7 +33,7 @@ const createProfileTemplate = (films) => {
   </section>`;
 };
 
-export default class ProfileComponent extends AbstractComponent {
+export default class Profile extends AbstractComponent {
   constructor(films) {
     super();
     this._films = films;

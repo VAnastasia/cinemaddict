@@ -8,7 +8,7 @@ const createFilmExtraList = (text) => {
     </section>`;
 };
 
-export default class FilmExtraListComponent extends AbstractComponent {
+export default class FilmExtraList extends AbstractComponent {
   constructor(title) {
     super();
     this._title = title;

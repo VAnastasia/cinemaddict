@@ -59,7 +59,7 @@ const createCommentsTemplate = (comments) => {
 };
 
 
-export default class CommentsComponent extends AbstractSmartComponent {
+export default class Comments extends AbstractSmartComponent {
   constructor(comments) {
     super();
     this._comments = comments;

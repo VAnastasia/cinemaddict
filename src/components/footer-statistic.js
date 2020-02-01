@@ -6,7 +6,7 @@ const createFooterStatisticTemplate = (amount) => {
   </section>`;
 };
 
-export default class FooterStatisticComponent extends AbstractComponent {
+export default class FooterStatistic extends AbstractComponent {
   constructor(amount) {
     super();
     this._amount = amount;

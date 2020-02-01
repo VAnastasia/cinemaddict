@@ -1,4 +1,4 @@
-import FilterComponent from "../components/filter";
+import Filter from "../components/filter";
 import {replace, render, Position} from "../utils";
 
 export const FilterType = {
@@ -53,7 +53,7 @@ export default class FilterController {
     });
 
     const oldComponent = this._filterComponent;
-    this._filterComponent = new FilterComponent(filters);
+    this._filterComponent = new Filter(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
     this._filterComponent.setShowStatisticHandler(this._showStatisticsHandler);
 

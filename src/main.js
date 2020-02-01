@@ -1,6 +1,6 @@
 import FilterController from "./controllers/filter";
-import ProfileComponent from "./components/profile";
-import FooterStatisticComponent from "./components/footer-statistic";
+import Profile from "./components/profile";
+import FooterStatistic from "./components/footer-statistic";
 import PageController from "./controllers/page";
 import {moviesModel} from "./models/movies";
 import {api} from "./api";
@@ -29,13 +29,13 @@ const showStatisticsHandler = (page, statistics) => {
 api.getFilms()
   .then((filmsAll) => {
     moviesModel.setFilms(filmsAll);
-    render(siteHeaderElement, new ProfileComponent(filmsAll).getElement(), Position.BEFOREEND);
+    render(siteHeaderElement, new Profile(filmsAll).getElement(), Position.BEFOREEND);
     const statisticsComponent = new StatisticsComponent(moviesModel);
     siteMainElement.innerHTML = ``;
 
     const filterController = new FilterController(siteMainElement, moviesModel, showStatisticsHandler(pageController, statisticsComponent), statisticsComponent);
     filterController.render();
-    render(siteFooterElement, new FooterStatisticComponent(filmsAll.length).getElement(), Position.BEFOREEND);
+    render(siteFooterElement, new FooterStatistic(filmsAll.length).getElement(), Position.BEFOREEND);
     pageController.render();
     render(siteMainElement, statisticsComponent.getElement(), Position.BEFOREEND);
     statisticsComponent.hide();

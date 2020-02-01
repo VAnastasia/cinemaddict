@@ -4,7 +4,7 @@ const createShowMoreTemplate = () => {
   return `<button class="films-list__show-more">Show more</button>`;
 };
 
-export default class ShowMoreComponent extends AbstractComponent {
+export default class ShowMore extends AbstractComponent {
   getTemplate() {
     return createShowMoreTemplate();
   }

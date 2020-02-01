@@ -1,6 +1,6 @@
-import FilmComponent from "../components/film";
-import FilmPopupComponent from "../components/film-popup";
-import CommentsComponent from "../components/comments";
+import Film from "../components/film";
+import FilmPopup from "../components/film-popup";
+import Comments from "../components/comments";
 import {render, unrender, replace, remove, Position} from "../utils";
 import MovieModel from "../models/movie";
 
@@ -34,8 +34,8 @@ export default class MovieController {
     const oldFilmPopupComponent = this._filmPopupComponent;
     this._mode = mode;
 
-    this._filmComponent = new FilmComponent(film);
-    this._filmPopupComponent = new FilmPopupComponent(film);
+    this._filmComponent = new Film(film);
+    this._filmPopupComponent = new FilmPopup(film);
 
     this._filmComponent.setTitleClickHandler(() => {
       this._showPopup();
@@ -211,7 +211,7 @@ export default class MovieController {
         this._commentsComponent.getElement().remove();
       }
 
-      this._commentsComponent = new CommentsComponent(comments);
+      this._commentsComponent = new Comments(comments);
       render(this._filmPopupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), Position.BEFOREEND);
 
       this._commentsComponent.setDeleteClickHandler((evt) => {
