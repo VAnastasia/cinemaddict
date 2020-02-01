@@ -216,8 +216,10 @@ export default class MovieController {
 
       this._commentsComponent.setDeleteClickHandler((evt) => {
         evt.preventDefault();
+
         if (evt.target.className === `film-details__comment-delete`) {
           const id = parseInt(evt.target.dataset.id, 10);
+          this._commentsComponent.setData(id);
           const newFilm = MovieModel.clone(film);
           newFilm.commentsAmount = comments.length - 1;
           this._onDataChange(this, newFilm, id, Mode.DELETE);
